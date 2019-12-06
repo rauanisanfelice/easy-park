@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-    postgre:
+    easy-park-postgre:
         image: postgres:12
-        container_name: "POSTGRE"
+        container_name: "EASY-PARK-POSTGRE"
         environment:
             - POSTGRES_DB=postgres
             - POSTGRES_USER=admin
@@ -11,28 +11,28 @@ services:
         ports:
             - 5432:5432
         volumes:
-            - volume-potgre:/var/lib/postgresql:rw
-            - volume-postgre-data:/var/lib/postgresql/data:rw
+            - volume-potgre-easy-park:/var/lib/postgresql:rw
+            - volume-postgre-data-easy-park:/var/lib/postgresql/data:rw
         networks:
-            - network-postgres
+            - network-postgres-easy-park
 
-    pgadmin:
+    easy-park-pgadmin:
         image: dpage/pgadmin4
-        container_name: "PGADMIN"
+        container_name: "EASY-PARK-PGADMIN"
         environment:
             PGADMIN_DEFAULT_EMAIL: "admin"
             PGADMIN_DEFAULT_PASSWORD: "admin"
         ports:
             - 80:80
         depends_on:
-            - postgre
+            - easy-park-postgre
         networks:
-            - network-postgres
+            - network-postgres-easy-park
 
 networks:
-    network-postgres:
+    network-postgres-easy-park:
         driver: bridge
 
 volumes:
-    volume-potgre:
-    volume-postgre-data:
+    volume-potgre-easy-park:
+    volume-postgre-data-easy-park:
