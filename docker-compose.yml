@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+    postgre:
+        image: postgres:12
+        container_name: "POSTGRE"
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=admin
+            - POSTGRES_PASSWORD=docker123
+        ports:
+            - 5432:5432
+        volumes:
+            - volume-potgre:/var/lib/postgresql:rw
+            - volume-postgre-data:/var/lib/postgresql/data:rw
+        networks:
+            - network-postgres
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: "PGADMIN"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "admin"
+            PGADMIN_DEFAULT_PASSWORD: "admin"
+        ports:
+            - 80:80
+        depends_on:
+            - postgre
+        networks:
+            - network-postgres
+
+networks:
+    network-postgres:
+        driver: bridge
+
+volumes:
+    volume-potgre:
+    volume-postgre-data:
