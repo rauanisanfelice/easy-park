@@ -1,0 +1,72 @@
+
+{% extends 'template-login.html' %}
+{% load static %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Login{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}
+{% endblock %}
+
+{% block card-title %}
+    {% if user.is_authenticated %}
+        Você já esta logado!
+    {% else %}
+        Realize o login
+    {% endif %}
+{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+    {% if user.is_authenticated %}
+        <div class="row justify-content-center">
+            <h1><a href="{% url 'home' %}" class="link-none">Home</a></h1>
+        </div>
+    {% else %}
+
+        <form action="." method="POST" class="col-12">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- USUÁRIO -->
+            <div class="form-group col-12">
+                <label for="{{ form.username.id_for_label }}" class="form-text text-muted">Usuário:</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <!-- SENHA -->
+            <div class="form-group col-12">
+                <label for="{{ form.password.id_for_label }}" class="form-text text-muted">Senha:</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            
+            <!-- BOTAO -->
+            <div class="row justify-content-center">
+                <div class="col-5">
+                    <input class="btn btn-outline-secondary btn-block" type="submit" value="Login">
+                </div>
+            </div>
+
+        </form>
+
+        <br>
+        <div class="form-group col-12">
+            <a href="{% url 'password_reset' %}" class="link-none"><p class="font-italic text-sm-left">Esqueci minha senha.</p></a>
+            <a href="" class="link-none"><p class="font-italic text-sm-left">Criar conta.</p></a>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+{% endblock %}

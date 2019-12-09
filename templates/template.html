@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title %}{% endblock %}</title>
+
+        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+        {% comment %} Bootstrap {% endcomment %}
+        <link rel="stylesheet" type="text/css" href="{% static 'plugins/bootstrap-4.4.1-dist/css/bootstrap.css' %}">
+        
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+        {% comment %} SCRIPTS {% endcomment %}
+        <script src="{% static 'plugins/jQuery-3.4.1/jquery-3.4.1.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="{% static 'plugins/bootstrap-4.4.1-dist/js/bootstrap.min.js' %}"></script>
+
+        {% block script %}{% endblock %}
+    </body>
+</html>
