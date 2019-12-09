@@ -1,0 +1,39 @@
+.link-none:link{
+    color: #6c757d;
+    text-decoration:none;
+}
+
+.link-none:hover{
+    color: #6c757d;
+    background-color: none;
+}
+
+.link-none:visited{
+    color:#6c757d;   
+}
+
+#id_username{
+    width: 100%;;
+}
+
+#id_password{
+    width: 100%;;
+}
+
+#id_email{
+    width: 100%;;
+}
+
+#id_new_password1{
+    width: 100%;;
+}
+
+#id_new_password2{
+    width: 100%;;
+}
+
+.errorlist{
+    color: red;
+    margin-top: 10px;
+    font-style: italic;
+}
