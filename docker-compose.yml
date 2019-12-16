@@ -17,13 +17,17 @@ services:
             - network-postgres-easy-park
 
     easy-park-pgadmin:
-        image: dpage/pgadmin4
+        image: dpage/pgadmin4:4.16
         container_name: "EASY-PARK-PGADMIN"
         environment:
             PGADMIN_DEFAULT_EMAIL: "admin"
             PGADMIN_DEFAULT_PASSWORD: "admin"
         ports:
             - 80:80
+        volumes:
+            - volume-pgadmin-easy-park:/pgadmin4:rw
+            - volume-pgadmin-easy-park-lib:/var/lib/pgadmin:rw
+            - volume-pgadmin-easy-park-certs:/certs:rw
         depends_on:
             - easy-park-postgre
         networks:
@@ -36,3 +40,6 @@ networks:
 volumes:
     volume-potgre-easy-park:
     volume-postgre-data-easy-park:
+    volume-pgadmin-easy-park:
+    volume-pgadmin-easy-park-lib:
+    volume-pgadmin-easy-park-certs:
