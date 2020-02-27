@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$6g=h2d2h31*j&dd_+@-32d!4%!uyu6ts0@h92gmv!_^tamy&0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -67,11 +67,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'admin'),
-        'PASSWORD': os.environ.get('DB_PASS', 'docker123'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASS'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -130,8 +130,12 @@ LOGOUT_REDIRECT_URL = '/account/login/'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('DJANGO_EMAIL_HOST')
-EMAIL_USE_TLS = os.environ.get('DJANGO_EMAIL_TLS')
-EMAIL_PORT = os.environ.get('DJANGO_EMAIL_PORT')
-EMAIL_HOST_USER = os.environ.get('DJANGO_EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('DJANGO_EMAIL_PASSWORD')
+EMAIL_USE_TLS = config('DJANGO_EMAIL_TLS', cast=bool)
+EMAIL_HOST = config('DJANGO_EMAIL_HOST')
+EMAIL_PORT = config('DJANGO_EMAIL_PORT')
+
+EMAIL_HOST_USER = config('DJANGO_EMAIL_USER')
+EMAIL_HOST_PASSWORD = config('DJANGO_EMAIL_PASSWORD')
+
+EMAIL_FROM = config('DJANGO_EMAIL_USER')
+DEFAULT_FROM_EMAIL = config('DJANGO_EMAIL_USER')
