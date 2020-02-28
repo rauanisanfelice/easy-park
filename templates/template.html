@@ -88,46 +88,56 @@
             <!-- Sidebar -->
             <div class="sidebar">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">                        
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="../../index.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v1</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="../../index2.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v2</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="../../index3.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v3</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
+                        {% comment %} COMPRAR DE CRÉDITOS {% endcomment %}
                         <li class="nav-item">
                             <a href="../widgets.html" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>Widgets<span class="right badge badge-danger">New</span></p>
+                                <i class="nav-icon fas fa-money-check"></i>
+                                <p>Comprar créditos</p>
                             </a>
                         </li>
-                        
+
+                        {% comment %} CARTEIRA {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-wallet"></i>
+                                <p>Carteira</p>
+                            </a>
+                        </li>
+
+                        {% comment %} ESTACIONAR {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-car"></i>
+                                <p>Estacionar</p>
+                            </a>
+                        </li>
+
+                        {% comment %} HISTÓRICO {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-history"></i>
+                                <p>Histórico<span class="badge badge-warning right">2</span></p>
+                            </a>
+                        </li>
+
+                        {% comment %} NOTIFICAÇÕES {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-bell"></i>
+                                <p>Notificações<span class="badge badge-danger right">2</span></p>
+                            </a>
+                        </li>
+
+                        {% comment %} PERFIL {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="{% url 'perfil' %}" class="nav-link">
+                                <i class="nav-icon far fa-user-circle"></i>
+                                <p>Perfil</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
             </div>
