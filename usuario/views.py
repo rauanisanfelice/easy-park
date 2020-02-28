@@ -12,7 +12,7 @@ from .forms import *
 def index(request):
     return redirect('login')
 
-class home(View):
+class Home(View):
     retorno = 'home.html'
     def get(self, request):
         return render(request, self.retorno)
@@ -22,3 +22,7 @@ class SignUp(generic.CreateView):
     success_url = reverse_lazy('home')
     template_name = 'signup.html'
 
+class Perfil(View):
+    retorno = 'blank.html'
+    def get(self, request):
+        return render(request, self.retorno)
