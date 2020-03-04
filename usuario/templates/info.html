@@ -1,0 +1,30 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Informações{% endblock %}
+{% block name_page %}Informações{% endblock %}
+{% block tree %}
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">/</div>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">Informações</div>
+</li>
+{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+<div class="card card-solid card-outline">
+    <div class="card-body box-profile">
+        Informações
+    </div>
+</div>
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+{% endblock %}
