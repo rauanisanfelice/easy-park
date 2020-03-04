@@ -36,8 +36,8 @@
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="{% url 'home' %}" class="nav-link">Início</a>
-                    {% block tree %}{% endblock %}
                 </li>
+                {% block tree %}{% endblock %}
             </ul>
 
             <!-- Right navbar links -->
@@ -124,7 +124,7 @@
 
                         {% comment %} NOTIFICAÇÕES {% endcomment %}
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
+                            <a href="{% url 'notificacoes' %}" class="nav-link">
                                 <i class="nav-icon fas fa-bell"></i>
                                 <p>Notificações<span class="badge badge-danger right">2</span></p>
                             </a>
@@ -138,6 +138,14 @@
                             </a>
                         </li>
 
+                        {% comment %} PERFIL {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="{% url 'info' %}" class="nav-link">
+                                <i class="nav-icon fas fa-info"></i>
+                                <p>Informações</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
             </div>
@@ -145,6 +153,9 @@
 
         <!-- BODY -->
         <div class="content-wrapper">
+            <section class="content-header">
+                <div class="container-fluid"></div>
+            </section>
             <section class="content">
                 {% block body %}{% endblock %}
             </section>
