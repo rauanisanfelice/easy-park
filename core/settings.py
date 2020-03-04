@@ -19,7 +19,6 @@ ALLOWED_HOSTS = []
 # Application definition
 INSTALLED_APPS = [
     'administrativo',
-    'estacionamento',
     'usuario',
     'vendedor',
     'django.contrib.admin',
