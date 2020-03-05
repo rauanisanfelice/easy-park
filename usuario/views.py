@@ -44,3 +44,31 @@ class Notificacoes(View):
     retorno = 'notificacoes.html'
     def get(self, request):
         return render(request, self.retorno)
+
+
+class Historico(View):
+    retorno = 'historico.html'
+    def get(self, request):
+        return render(request, self.retorno)
+
+
+class Estacionar(View):
+    retorno = 'estacionar.html'
+    def get(self, request):
+        return render(request, self.retorno)
+
+class Veiculo(View):
+    retorno = 'veiculo.html'
+    def get(self, request):
+        return render(request, self.retorno)
+
+class Carteira(View):
+    retorno = 'carteira.html'
+    def get(self, request):
+        return render(request, self.retorno)
+
+
+class Comprar(View):
+    retorno = 'comprar.html'
+    def get(self, request):
+        return render(request, self.retorno)

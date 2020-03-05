@@ -92,7 +92,7 @@
 
                         {% comment %} COMPRAR DE CRÉDITOS {% endcomment %}
                         <li class="nav-item">
-                            <a href="../widgets.html" class="nav-link">
+                            <a href="{% url 'comprar' %}" class="nav-link">
                                 <i class="nav-icon fas fa-money-check"></i>
                                 <p>Comprar créditos</p>
                             </a>
@@ -100,7 +100,7 @@
 
                         {% comment %} CARTEIRA {% endcomment %}
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
+                            <a href="{% url 'carteira' %}" class="nav-link">
                                 <i class="nav-icon fas fa-wallet"></i>
                                 <p>Carteira</p>
                             </a>
@@ -108,15 +108,23 @@
 
                         {% comment %} ESTACIONAR {% endcomment %}
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-car"></i>
+                            <a href="{% url 'estacionar' %}" class="nav-link">
+                                <i class="nav-icon fas fa-parking"></i>
                                 <p>Estacionar</p>
+                            </a>
+                        </li>
+
+                        {% comment %} VEICULOS {% endcomment %}
+                        <li class="nav-item has-treeview">
+                            <a href="{% url 'veiculo' %}" class="nav-link">
+                                <i class="nav-icon fas fa-car"></i>
+                                <p>Veículo</p>
                             </a>
                         </li>
 
                         {% comment %} HISTÓRICO {% endcomment %}
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
+                            <a href="{% url 'historico' %}" class="nav-link">
                                 <i class="nav-icon fas fa-history"></i>
                                 <p>Histórico<span class="badge badge-warning right">2</span></p>
                             </a>

@@ -12,4 +12,9 @@ urlpatterns = [
     path('perfil/', Perfil.as_view(), name='perfil'),
     path('informacoes/', Informacoes.as_view(), name='info'),
     path('notificacoes/', Notificacoes.as_view(), name='notificacoes'),
+    path('historico/', Historico.as_view(), name='historico'),
+    path('estacionar/', Estacionar.as_view(), name='estacionar'),
+    path('veiculo/', Veiculo.as_view(), name='veiculo'),
+    path('carteira/', Carteira.as_view(), name='carteira'),
+    path('comprar/', Comprar.as_view(), name='comprar'),
 ]
