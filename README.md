@@ -70,9 +70,6 @@ python manage.py runserver 8000 --noreload
 [Site](http://localhost:8000)
 
 
-### Novo Aplicativo.
-```
-python manage.py startapp [nome]
-```
+### Criando arquivo .env
 
-Alterar *[nome]* pelo nome do novo aplicativo.
+Copie o conteúdo do arquivo .env-example e crie um novo arquivo .env, cole o conteúdo e altere as variáveis.
