@@ -17,6 +17,9 @@
         <link rel="stylesheet" href="{% static 'plugins/AdminLTE-3.0.2/dist/css/adminlte.min.css' %}">
         <!-- Google Font: Source Sans Pro -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
 
         {% comment %} Bootstrap {% endcomment %}
         <link rel="stylesheet" type="text/css" href="{% static 'plugins/bootstrap-4.4.1-dist/css/bootstrap.css' %}">
@@ -194,6 +197,11 @@
         <script src="{% static 'plugins/bootstrap-4.4.1-dist/js/bootstrap.min.js' %}"></script>
         <script src="{% static 'plugins/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'plugins/AdminLTE-3.0.2/dist/js/adminlte.min.js' %}"></script>
+
+        <!-- DataTables -->
+        <script src="{% static 'plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+
         {% block script %}{% endblock %}
     </body>
 
