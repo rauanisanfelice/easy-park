@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class infoUsuario(models.Model):
+class InfoUsuario(models.Model):
     db_table = 'infoUsuario'
 
     cpf = models.CharField(max_length=100)
@@ -9,14 +9,14 @@ class infoUsuario(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
-class funcionario(models.Model):
+class Funcionario(models.Model):
     db_table = 'funcionario'
 
     setor = models.CharField(max_length=20)
     fiscal = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
-class carteira(models.Model):
+class Carteira(models.Model):
     db_table = 'carteira'
 
     valor = models.DecimalField(max_digits=15, decimal_places=2)
@@ -29,17 +29,17 @@ class carteira(models.Model):
     tipo_lancamento = models.CharField(choices=cho_status, max_length=2, default=cho_status[0][0])
     data_insercao = models.DateTimeField(auto_now_add=True)
 
-class veiculo(models.Model):
+class Veiculo(models.Model):
     db_table = 'veiculo'
-
+    
     placa = models.CharField(max_length=7)
-    modelo = models.CharField(max_length=100)
+    apelido = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
-
-class parada(models.Model):
+class Parada(models.Model):
     db_table = 'parada'
     
-    veiculos = models.ForeignKey(veiculo, on_delete=models.PROTECT)
+    veiculos = models.ForeignKey(Veiculo, on_delete=models.PROTECT)
     data_parada = models.DateTimeField(auto_now_add=True)
     hora_parada = models.TimeField(auto_now_add=True)
     
@@ -54,11 +54,11 @@ class parada(models.Model):
     ]
     quantidade_horas = models.CharField(choices=cho_quantidade_horas, max_length=8, default=cho_quantidade_horas[0][0])
 
-class notificacao(models.Model):
+class Notificacao(models.Model):
     db_table = 'notificacao'
     verbose_name_plural = 'notificacoes'
 
-    paradas = models.ForeignKey(parada, on_delete=models.PROTECT)
+    paradas = models.ForeignKey(Parada, on_delete=models.PROTECT)
     funcionario = models.ForeignKey(User, on_delete=models.PROTECT)
     data_notificacao = models.TimeField(auto_now_add=True)
     descricao_notificao =models.CharField(max_length=100)
