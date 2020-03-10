@@ -20,11 +20,74 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Notificações
+        {% comment %} TABELA {% endcomment %}
+        <div class="card-body">
+            <table id="table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Data - Hora</th>
+                        <th>Ações</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>10/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>10/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>10/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>12/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>10/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Suas horas estão acabando...</td>
+                        <td>10/03/2020 - 10:50</td>
+                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
+    <script>
+        $(function () {
+            $('#table').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "cell-border": false,
+            });
+        });
+    </script>
 {% endblock %}

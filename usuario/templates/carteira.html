@@ -20,7 +20,63 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Carteira
+        
+        {% comment %} CARTEIRA {% endcomment %}
+        <div class="card-body">
+            <!-- APELIDO -->
+            <div class="form-group">
+                <i class="fas fa-wallet"></i>
+                <label for="exampleInputEmail1">Seu saldo é:</label>
+                <label for="saldo">R$ 10,00</label>
+            </div>
+            <a href="{% url 'comprar' %}" class="btn btn-outline-info">Comprar mair créditos.</a>
+        </div>
+
+        
+        {% comment %} TABELA {% endcomment %}
+        <div class="card-footer">
+            <table id="table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Data - Hora</th>
+                        <th>Créditos ou Débitos</th>
+                        <th>Saldo anterior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>R$ 5,00</td>
+                        <td>R$ 5,00</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>R$ 5,00</td>
+                        <td>R$ 0,00</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>- R$ 5,00</td>
+                        <td>R$ 5,00</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>- R$ 5,00</td>
+                        <td>R$ 10,00</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>- R$ 5,00</td>
+                        <td>R$ 15,00</td>
+                    </tr>
+                    <tr>
+                        <td>10/03/2020 - 11:15</td>
+                        <td>R$ 15,00</td>
+                        <td>R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
