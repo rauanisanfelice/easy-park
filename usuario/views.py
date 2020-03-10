@@ -6,11 +6,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
+from django.http import QueryDict
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import *
+from .models import Veiculo
 
-
+import json
 
 def index(request):
     return redirect('login')
@@ -28,47 +30,79 @@ class SignUp(generic.CreateView):
     template_name = 'signup.html'
 
 
-class Perfil(View):
+class PagePerfil(View):
     retorno = 'perfil.html'
     def get(self, request):
         return render(request, self.retorno)
 
 
-class Informacoes(View):
+class PageInformacoes(View):
     retorno = 'info.html'
     def get(self, request):
         return render(request, self.retorno)
 
 
-class Notificacoes(View):
+class PageNotificacoes(View):
     retorno = 'notificacoes.html'
     def get(self, request):
         return render(request, self.retorno)
 
 
-class Historico(View):
+class PageHistorico(View):
     retorno = 'historico.html'
     def get(self, request):
         return render(request, self.retorno)
 
 
-class Estacionar(View):
+class PageEstacionar(View):
     retorno = 'estacionar.html'
     def get(self, request):
         return render(request, self.retorno)
 
-class Veiculo(View):
+class PageVeiculo(View):
     retorno = 'veiculo.html'
     def get(self, request):
-        return render(request, self.retorno)
+        veiculos = Veiculo.objects.all().filter(user=request.user.id)
+        return render(request, self.retorno, {
+            "veiculos": veiculos
+        })
+    
+    def post(self, request):
+        var_apelido = request.POST.get('apelido')
+        var_placa = request.POST.get('placa')
 
-class Carteira(View):
+        newVeiculo = Veiculo(apelido=var_apelido, placa=var_placa, user=request.user)
+        newVeiculo.save()
+
+        veiculos = Veiculo.objects.all().filter(user=request.user.id)
+        return render(request, self.retorno, {
+            "veiculos": veiculos,
+            "sucesso": "Cadastro de veículo com sucesso.",
+        })
+
+    def delete(self, request):
+        
+        var_delete = QueryDict(request.body)
+        id_veiculo = var_delete.get('id_veiculo')
+
+        # id_veiculo = request.POST.get('id_veiculo')
+        delVeiculos = Veiculo.objects.get(id=id_veiculo)
+        delVeiculos.delete()
+
+        veiculos = Veiculo.objects.all().filter(user=request.user.id)
+        return render(request, self.retorno, {
+            "veiculos": veiculos,
+            "sucesso": "Cadastro de veículo com sucesso.",
+        })
+
+
+class PageCarteira(View):
     retorno = 'carteira.html'
     def get(self, request):
         return render(request, self.retorno)
 
 
-class Comprar(View):
+class PageComprar(View):
     retorno = 'comprar.html'
     def get(self, request):
         return render(request, self.retorno)

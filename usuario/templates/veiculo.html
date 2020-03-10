@@ -20,11 +20,95 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Veículos
+        
+        {% comment %} FORMULARIO {% endcomment %}
+        <form role="form" action="." method="POST">{% csrf_token %}
+            <div class="card-body">
+                <!-- APELIDO -->
+                <div class="form-group">
+                    <label for="apelido">Apelido</label>
+                    <input type="text" name="apelido" id="apelido" placeholder="Apelido" class="form-control">
+                </div>
+
+                <!-- PLACA -->
+                <div class="form-group">
+                    <label for="exampleInputPlaca">Placa</label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="placa" id="exampleInputPlaca" placeholder="AAA-0000 ou  AAA0A00" class="form-control is-valid">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><span class="fas fa-car"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+        
+        {% comment %} TABELA {% endcomment %}
+        <div class="card-footer">
+            <table id="table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Apelido</th>
+                        <th>Placa</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if veiculos %}
+                        {% for veiculo in  veiculos %}
+                            <tr>
+                                <td>{{ veiculo.apelido }}</td>
+                                <td>{{ veiculo.placa }}</td>
+                                <td>
+                                    <div style="text-align: center;">
+                                        <button class="btn btnDelete flex-shrink-1 p-1 text-center btn-acao-vermelho"  value="{{ veiculo.id }}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td></td><td></td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
-{% block script %}
+{% block script %}    
+    <script>
+        $("#table").on('click', '.btnDelete', function () {
+            var id_veiculo = $(this).val();
+            $.ajax({
+                type: "DELETE",
+                url: '{% url 'veiculo' %}',
+                data: {
+                    'id_veiculo': id_veiculo,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                    xhr.setRequestHeader("id_veiculo", id_veiculo);
+                }
+            });
+        });
+
+        $(function () {
+            $('#table').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+            });
+        });
+    </script>
 {% endblock %}
