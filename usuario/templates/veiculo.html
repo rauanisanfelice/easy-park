@@ -34,13 +34,12 @@
                 <div class="form-group">
                     <label for="exampleInputPlaca">Placa</label>
                     <div class="input-group mb-3">
-                        <input type="text" name="placa" id="exampleInputPlaca" placeholder="AAA-0000 ou  AAA0A00" class="form-control is-valid">
+                        <input type="text" name="placa" id="exampleInputPlaca" onkeypress="ValidPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control is-valid">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-car"></span></div>
                         </div>
                     </div>
                 </div>
-
                 <button type="submit" class="btn btn-primary">Salvar</button>
             </div>
         </form>
@@ -63,7 +62,7 @@
                                 <td>{{ veiculo.placa }}</td>
                                 <td>
                                     <div style="text-align: center;">
-                                        <button class="btn btnDelete flex-shrink-1 p-1 text-center btn-acao-vermelho"  value="{{ veiculo.id }}">
+                                        <button title="Remover" class="btn btnDelete flex-shrink-1 p-1 text-center btn-acao-vermelho"  value="{{ veiculo.id }}">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </div>
@@ -83,19 +82,26 @@
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}    
     <script>
+        
+        function ValidPlaca(){
+
+        }
+
         $("#table").on('click', '.btnDelete', function () {
             var id_veiculo = $(this).val();
             $.ajax({
                 type: "DELETE",
                 url: '{% url 'veiculo' %}',
+                dataType: "json",
                 data: {
                     'id_veiculo': id_veiculo,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
-                dataType: "json",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                    xhr.setRequestHeader("id_veiculo", id_veiculo);
+                },
+                success: function (response) {
+                    $(this).closest('tr').remove();
                 }
             });
         });

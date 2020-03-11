@@ -50,3 +50,53 @@
     font-style: italic;
     color: #6c757d;
 }
+
+.btn-acao-vermelho {
+    position: relative;
+    color: #990606 !important;
+    border-radius: 2px;
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all;
+}
+
+.btn-acao-vermelho:hover {
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all;
+    background-color: #990606 !important;
+    color: #ffffff !important;
+}
+
+
+.btn-acao-verde {
+    position: relative;
+    color: #007e0c !important;
+    border-radius: 2px;
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all; 
+}
+.btn-acao-verde:hover {
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all;
+    background-color: #007e0c !important;
+    color: #ffffff !important; 
+}
+
+.btn-acao-azul {
+    color: #003d7e !important;
+    border-radius: 2px;
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all;
+}
+
+.btn-acao-azul:hover {
+    -webkit-transition: 0.66s all;
+    -o-transition: 0.66s all;
+    transition: 0.66s all;
+    background-color: #003d7e !important;
+    color: #ffffff !important;
+}

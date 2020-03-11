@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
-from django.http import QueryDict
+from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import *
@@ -82,18 +82,14 @@ class PageVeiculo(View):
 
     def delete(self, request):
         
+        # BUSCA O ID NO BODY DA REQUISIÇÃO 
         var_delete = QueryDict(request.body)
         id_veiculo = var_delete.get('id_veiculo')
 
-        # id_veiculo = request.POST.get('id_veiculo')
         delVeiculos = Veiculo.objects.get(id=id_veiculo)
         delVeiculos.delete()
-
-        veiculos = Veiculo.objects.all().filter(user=request.user.id)
-        return render(request, self.retorno, {
-            "veiculos": veiculos,
-            "sucesso": "Cadastro de veículo com sucesso.",
-        })
+        retorno = { "retorno" : True }
+        return HttpResponse(json.dumps(retorno), content_type="application/json")
 
 
 class PageCarteira(View):
