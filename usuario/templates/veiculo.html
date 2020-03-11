@@ -21,6 +21,18 @@
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
         
+        {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_mensagem }}
+            </div>
+        {% endif %}
+        {% if sucesso %}
+            <div class="alert alert-success" role="alert">
+                {{ sucesso_mensagem }}
+            </div>
+        {% endif %}
+
         {% comment %} FORMULARIO {% endcomment %}
         <form role="form" action="." method="POST">{% csrf_token %}
             <div class="card-body">
@@ -34,16 +46,16 @@
                 <div class="form-group">
                     <label for="exampleInputPlaca">Placa</label>
                     <div class="input-group mb-3">
-                        <input type="text" name="placa" id="exampleInputPlaca" onkeypress="ValidPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control is-valid">
+                        <input type="text" name="placa" id="exampleInputPlaca" onkeyup="ValidPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-car"></span></div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="submit" id="salvar" class="btn btn-primary">Salvar</button>
             </div>
         </form>
-        
+
         {% comment %} TABELA {% endcomment %}
         <div class="card-footer">
             <table id="table" class="table table-hover">
@@ -84,9 +96,28 @@
     <script>
         
         function ValidPlaca(){
+            var placa = document.getElementById("exampleInputPlaca");
+            document.getElementById("exampleInputPlaca").value = placa.value.toUpperCase();
+            if (placa.value.length > 6){
+                let PlacaOLD = new RegExp("^[A-Z]{3}[0-9]{4}$");
+                let PlacaNEW = new RegExp("^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$");
+                
+                var t1 = PlacaOLD.test(placa.value);
+                var t2 = PlacaNEW.test(placa.value);
 
+                if (t1 == true || t2 == true) {
+                    placa.classList.add("is-valid");
+                    placa.classList.remove("is-invalid");
+                } else {
+                    placa.classList.add("is-invalid");
+                    placa.classList.remove("is-valid");
+                }
+            } else {
+                placa.classList.add("is-invalid");
+                placa.classList.remove("is-valid");
+            }
         }
-
+        
         $("#table").on('click', '.btnDelete', function () {
             var id_veiculo = $(this).val();
             $.ajax({

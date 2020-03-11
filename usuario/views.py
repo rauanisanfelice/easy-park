@@ -70,16 +70,25 @@ class PageVeiculo(View):
     def post(self, request):
         var_apelido = request.POST.get('apelido')
         var_placa = request.POST.get('placa')
-
-        newVeiculo = Veiculo(apelido=var_apelido, placa=var_placa, user=request.user)
-        newVeiculo.save()
-
         veiculos = Veiculo.objects.all().filter(user=request.user.id)
-        return render(request, self.retorno, {
-            "veiculos": veiculos,
-            "sucesso": "Cadastro de veículo com sucesso.",
-        })
 
+        if var_apelido or var_placa:
+            newVeiculo = Veiculo(apelido=var_apelido, placa=var_placa, user=request.user)
+            newVeiculo.save()
+            
+            return render(request, self.retorno, {
+                "veiculos": veiculos,
+                "sucesso": "True",
+                "sucesso_mensagem": "Cadastro de veículo com sucesso.",
+            })
+
+        else:
+            return render(request, self.retorno, {
+                "veiculos": veiculos,
+                "error": "True",
+                "error_mensagem": "Campos vazios.",
+            })
+    
     def delete(self, request):
         
         # BUSCA O ID NO BODY DA REQUISIÇÃO 
@@ -88,6 +97,7 @@ class PageVeiculo(View):
 
         delVeiculos = Veiculo.objects.get(id=id_veiculo)
         delVeiculos.delete()
+        
         retorno = { "retorno" : True }
         return HttpResponse(json.dumps(retorno), content_type="application/json")
 
