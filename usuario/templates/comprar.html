@@ -1,5 +1,6 @@
 {% extends 'template.html' %}
 {% load static %}
+{% load bootstrap4 %}
 
 {% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
 {% block title %}Comprar Créditos{% endblock %}
@@ -20,7 +21,30 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Comprar Créditos
+        
+        {% comment %} CARTEIRA {% endcomment %}
+
+        <div class="info-box">
+            <span class="info-box-icon bg-info"><i class="fas fa-wallet"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Seu saldo é de:</span>
+                <span class="info-box-number">R$ {{ saldo }}</span>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <h4>Selecione quanto deseja comprar:</h4>
+            <div class="row">
+                <form action="." method="post" class="form">{% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">Comprar</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

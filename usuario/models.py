@@ -28,6 +28,7 @@ class Carteira(models.Model):
     ]
     tipo_lancamento = models.CharField(choices=cho_status, max_length=2, default=cho_status[0][0])
     data_insercao = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 class Veiculo(models.Model):
     db_table = 'veiculo'
@@ -63,3 +64,11 @@ class Notificacao(models.Model):
     data_notificacao = models.TimeField(auto_now_add=True)
     descricao_notificao =models.CharField(max_length=100)
     data_lida = models.TimeField(null=True)
+
+class ValoresCompra(models.Model):
+    db_table = 'valorescompra'
+
+    descricao = models.CharField(max_length=100)
+    valor = models.IntegerField()
+    ativo = models.BooleanField()
+    ordem = models.IntegerField()
