@@ -100,3 +100,7 @@
     background-color: #003d7e !important;
     color: #ffffff !important;
 }
+
+:not(.layout-fixed) .main-sidebar {
+    position: fixed;
+}
