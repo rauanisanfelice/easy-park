@@ -21,20 +21,53 @@
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
 
-        <form role="form">
+        {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_mensagem }}
+            </div>
+        {% endif %}
+        {% if sucesso %}
+            <div class="alert alert-success" role="alert">
+                {{ sucesso_mensagem }}
+            </div>
+        {% endif %}
+
+        <form role="form" action="." method="POST"> {% csrf_token %}
             <div class="card-body">
                 
-                <!-- NOME COMPLETO -->
+                <!-- Nome completo -->
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Nome Completo</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Nome completo">
+                    <label for="exampleInputNome">Nome completo</label>
+                    <input name="nome" type="text" value="{{ user.first_name }}" class="form-control" id"exampleInputNome" placeholder="Nome completo">
+                </div>
+
+                <!-- Usuário -->
+                <div class="form-group">
+                    <label for="exampleInputUsuario">Usuário</label>
+                    <input name="usuario" type="text" value="{{ user.username }}" class="form-control" id="exampleInputUsuario" placeholder="Usuário" readonly>
+                </div>
+
+                <!-- Cidade -->
+                <div class="form-group">
+                    <label for="exampleInputCidade">Cidade</label>
+                    {% if infousuario %}
+                        <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control" id"exampleInputCidade" placeholder="Cidade">
+                        {% else %}
+                            <input name="cidade" type="text" value="" class="form-control" id"exampleInputCidade" placeholder="Cidade">
+                        {% endif %}
                 </div>
 
                 <!-- Telefone -->
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Telefone</label>
+                    <label for="exampleInputTelefone">Telefone</label>
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control is-valid" id="exampleInputEmail1" placeholder="Telefone">
+                        {% if infousuario %}
+                            <input name="telefone" type="tel" value="{{ infousuario.telefone }}" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="exampleInputTelefone" placeholder="Telefone">
+                        {% else %}
+                            <input name="telefone" type="tel" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="exampleInputTelefone" placeholder="Telefone">
+                        {% endif %}
+                        
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-mobile"></span></div>
                         </div>
@@ -45,7 +78,7 @@
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control is-invalid" id="exampleInputEmail1" placeholder="E-mail">
+                        <input name="email" type="email" value="{{ user.email}}" onkeyup="ValidarEmail()" maxlength="60" class="form-control" id="exampleInputEmail1" placeholder="E-mail" value="">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-envelope"></span></div>
                         </div>
@@ -56,7 +89,7 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input name="password" type="password" class="form-control" placeholder="Password" id="password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -64,7 +97,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control is-valid" placeholder="Confirmar Password">
+                        <input type="password" class="form-control" onkeyup="ValidarPassword()" placeholder="Confirmar Password" id="confirmPassword">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -86,4 +119,75 @@
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
+    <script>
+
+        function mascara(o,f){
+            v_obj=o
+            v_fun=f
+            setTimeout("execmascara()",1);
+        }
+
+        function execmascara(){
+            v_obj.value=v_fun(v_obj.value)
+            ValidarTelefone();
+        }
+
+        function mtel(v){
+            v=v.replace(/\D/g,"");             //Remove tudo o que não é dígito
+            v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
+            v=v.replace(/(\d)(\d{4})$/,"$1-$2");    //Coloca hífen entre o quarto e o quinto dígitos
+            return v;
+        }
+
+        function ValidarTelefone(){
+            var telefone = document.getElementById("exampleInputTelefone");
+            let TelefoneReg = new RegExp("^[(]{1}[0-9]{2}[)]{1} [0-9]{5}-[0-9]{4}$");
+            var t1 = TelefoneReg.test(telefone.value);
+            console.log(t1);
+            if (t1 == true) {
+                telefone.classList.add("is-valid");
+                telefone.classList.remove("is-invalid");
+            } else {
+                telefone.classList.add("is-invalid");
+                telefone.classList.remove("is-valid");
+            }
+        }
+
+        function ValidarEmail() {
+            var field = document.getElementById("exampleInputEmail1");
+            usuario = field.value.substring(0, field.value.indexOf("@"));
+            dominio = field.value.substring(field.value.indexOf("@")+ 1, field.value.length);
+            
+            if ((usuario.length >=1) &&
+                    (dominio.length >=3) && 
+                    (usuario.search("@")==-1) && 
+                    (dominio.search("@")==-1) &&
+                    (usuario.search(" ")==-1) && 
+                    (dominio.search(" ")==-1) &&
+                    (dominio.search(".")!=-1) &&      
+                    (dominio.indexOf(".") >=1)&& 
+                    (dominio.lastIndexOf(".") < dominio.length - 1)) {
+                    
+                field.classList.add("is-valid");
+                field.classList.remove("is-invalid");
+            } else {
+                field.classList.add("is-invalid");
+                field.classList.remove("is-valid");
+            }
+        }
+
+        function ValidarPassword(){
+            var pass1 = document.getElementById("password");
+            var pass2 = document.getElementById("confirmPassword");
+
+            if (pass1.value == pass2.value){
+                pass2.classList.add("is-valid");
+                pass2.classList.remove("is-invalid");
+            } else {
+                pass2.classList.add("is-invalid");
+                pass2.classList.remove("is-valid");
+            }
+        }
+
+    </script>
 {% endblock %}

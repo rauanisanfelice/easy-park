@@ -9,8 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
+from .models import Veiculo, InfoUsuario
 from .forms import *
-from .models import Veiculo
 
 import json
 
@@ -32,8 +32,64 @@ class SignUp(generic.CreateView):
 
 class PagePerfil(View):
     retorno = 'perfil.html'
+    
     def get(self, request):
-        return render(request, self.retorno)
+        usuario = User.objects.get(id=request.user.id)
+        try:
+            infousuario = InfoUsuario.objects.get(user=usuario)
+            return render(request, self.retorno, {
+                "infousuario": infousuario,
+            })
+        except:
+            return render(request, self.retorno, {
+                "infousuario": None,
+            })
+    
+    def post(self, request):
+        
+        nome = request.POST.get('nome')
+        telefone = request.POST.get('telefone')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        cidade = request.POST.get('cidade')
+        
+        usuario = User.objects.get(id=request.user.id)
+        infousuario = InfoUsuario.objects.get(user=usuario)
+        
+        try:
+            usuario.first_name = nome
+            usuario.email = email
+            if password: usuario.password = password
+            usuario.save()
+            
+            request.user.id = usuario.id
+            request.user.first_name = nome
+            request.user.email = email
+            request.user.password = password
+            request.user.save()
+
+            telefone = telefone.replace("(", "").replace(")","").replace(" ","").replace("-","")
+            if infousuario:
+                infousuario.telefone = telefone
+                infousuario.cidade = cidade
+                infousuario.save()
+            else:
+                telefone = "+55"+telefone
+                infousuario = InfoUsuario(telefone=telefone, user=usuario, cidade=cidade)
+                infousuario.save()
+
+            
+            return render(request, self.retorno, {
+                "infousuario": infousuario,
+                "sucesso": "True",
+                "sucesso_mensagem": "Dados atualizados com sucesso.",
+            })
+        except:
+            return render(request, self.retorno, {
+                "infousuario": infousuario,
+                "error": "True",
+                "error_mensagem": "Erro ao atualizar, por gentileza tente mais tarde.",
+            })
 
 
 class PageInformacoes(View):
@@ -97,7 +153,7 @@ class PageVeiculo(View):
 
         delVeiculos = Veiculo.objects.get(id=id_veiculo)
         delVeiculos.delete()
-        
+
         retorno = { "retorno" : True }
         return HttpResponse(json.dumps(retorno), content_type="application/json")
 
