@@ -72,3 +72,12 @@ class ValoresCompra(models.Model):
     valor = models.IntegerField()
     ativo = models.BooleanField()
     ordem = models.IntegerField()
+
+class HorasEstacionar(models.Model):
+    db_table = 'horasestacionar'
+
+    descricao = models.CharField(max_length=100)
+    horas = models.IntegerField()
+    minutos = models.IntegerField()
+    ativo = models.BooleanField()
+    ordem = models.IntegerField()
