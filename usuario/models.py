@@ -14,13 +14,14 @@ class Funcionario(models.Model):
 
     setor = models.CharField(max_length=20)
     fiscal = models.CharField(max_length=20)
+    ativo = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 class Carteira(models.Model):
     db_table = 'carteira'
 
-    valor = models.DecimalField(max_digits=15, decimal_places=2)
-    saldo = models.DecimalField(max_digits=15, decimal_places=2)
+    valor = models.DecimalField(max_digits=6, decimal_places=2)
+    saldo = models.DecimalField(max_digits=6, decimal_places=2)
 
     cho_status = [
         ('en', 'entrada'),
@@ -35,25 +36,40 @@ class Veiculo(models.Model):
     
     placa = models.CharField(max_length=7)
     apelido = models.CharField(max_length=100)
+    
+    ativo = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+
+
+class ValoresCompra(models.Model):
+    db_table = 'valorescompra'
+
+    descricao = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=6, decimal_places=2)
+    ativo = models.BooleanField(default=True)
+    ordem = models.IntegerField()
+
+class HorasEstacionar(models.Model):
+    db_table = 'horasestacionar'
+
+    descricao_horas = models.CharField(max_length=100)
+    horas = models.IntegerField()
+    minutos = models.IntegerField()
+
+    descricao_valor = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=6, decimal_places=2)
+    
+    ativo = models.BooleanField(default=True)
+    ordem = models.IntegerField()
 
 class Parada(models.Model):
     db_table = 'parada'
     
-    veiculos = models.ForeignKey(Veiculo, on_delete=models.PROTECT)
+    veiculo = models.ForeignKey(Veiculo, on_delete=models.PROTECT)
+    quantidade_horas = models.ForeignKey(HorasEstacionar, on_delete=models.PROTECT)
+
     data_parada = models.DateTimeField(auto_now_add=True)
     hora_parada = models.TimeField(auto_now_add=True)
-    
-    cho_quantidade_horas = [
-        ('1h', 'uma hora'),
-        ('1h:30min', 'uma hora e trinta minutos'),
-        ('2h', 'duas horas'),
-        ('2h:30min', 'duas horas e trinta minutos'),
-        ('3h', 'três hora'),
-        ('3h:30min', 'três horas e trinta minutos'),
-        ('4h', 'quatro hora'),
-    ]
-    quantidade_horas = models.CharField(choices=cho_quantidade_horas, max_length=8, default=cho_quantidade_horas[0][0])
 
 class Notificacao(models.Model):
     db_table = 'notificacao'
@@ -64,20 +80,3 @@ class Notificacao(models.Model):
     data_notificacao = models.TimeField(auto_now_add=True)
     descricao_notificao =models.CharField(max_length=100)
     data_lida = models.TimeField(null=True)
-
-class ValoresCompra(models.Model):
-    db_table = 'valorescompra'
-
-    descricao = models.CharField(max_length=100)
-    valor = models.IntegerField()
-    ativo = models.BooleanField()
-    ordem = models.IntegerField()
-
-class HorasEstacionar(models.Model):
-    db_table = 'horasestacionar'
-
-    descricao = models.CharField(max_length=100)
-    horas = models.IntegerField()
-    minutos = models.IntegerField()
-    ativo = models.BooleanField()
-    ordem = models.IntegerField()
