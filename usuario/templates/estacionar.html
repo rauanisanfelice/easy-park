@@ -20,7 +20,26 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Estacionar
+        
+        {% comment %} CARTEIRA {% endcomment %}
+        <div class="card-body">
+            <!-- APELIDO -->
+            <div class="info-box">
+                <span class="info-box-icon bg-info"><i class="fas fa-wallet"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Seu saldo é de:</span>
+                    <span class="info-box-number">R$ {{ saldo }}</span>
+                </div>
+            </div>
+            <a href="{% url 'comprar' %}" class="btn btn-outline-info text-center">Comprar mair créditos.</a>
+        </div>
+
+
+        {% comment %} TABELA {% endcomment %}
+        <div class="">
+        </div>
+
     </div>
 </div>
 {% endblock %}
