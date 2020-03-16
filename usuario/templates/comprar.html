@@ -33,15 +33,17 @@
             </div>
         </div>
 
-        <div class="card-footer">
-            <h4>Selecione quanto deseja comprar:</h4>
-            <div class="row">
-                <form action="." method="post" class="form">{% csrf_token %}
-                    {% bootstrap_form form %}
-                    {% buttons %}
-                        <button type="submit" class="btn btn-primary">Comprar</button>
-                    {% endbuttons %}
-                </form>
+        <div class="info-box">
+            <div class="info-box-content">
+                <h4>Selecione quanto deseja comprar:</h4>
+                <div class="row">
+                    <form action="." method="post" class="form">{% csrf_token %}
+                        {% bootstrap_form form %}
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary">Comprar</button>
+                        {% endbuttons %}
+                    </form>
+                </div>
             </div>
         </div>
 

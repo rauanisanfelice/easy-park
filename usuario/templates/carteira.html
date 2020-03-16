@@ -27,14 +27,14 @@
             <div class="form-group">
                 <i class="fas fa-wallet"></i>
                 <label for="exampleInputEmail1">Seu saldo é:</label>
-                <label for="saldo">R$ 10,00</label>
+                <label for="saldo">R$ {{ saldo }}</label>
             </div>
             <a href="{% url 'comprar' %}" class="btn btn-outline-info">Comprar mair créditos.</a>
         </div>
 
         
         {% comment %} TABELA {% endcomment %}
-        <div class="card-footer">
+        <div class="">
             <table id="table" class="table table-hover">
                 <thead>
                     <tr>
@@ -44,36 +44,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>R$ 5,00</td>
-                        <td>R$ 5,00</td>
-                    </tr>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>R$ 5,00</td>
-                        <td>R$ 0,00</td>
-                    </tr>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>- R$ 5,00</td>
-                        <td>R$ 5,00</td>
-                    </tr>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>- R$ 5,00</td>
-                        <td>R$ 10,00</td>
-                    </tr>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>- R$ 5,00</td>
-                        <td>R$ 15,00</td>
-                    </tr>
-                    <tr>
-                        <td>10/03/2020 - 11:15</td>
-                        <td>R$ 15,00</td>
-                        <td>R$ 0,00</td>
-                    </tr>
+                    {% for carteira in carteira_usuario %}
+                        <tr>
+                            <td>{{ carteira.data_insercao }}</td>
+                            {% if carteira.tipo_lancamento == "en" %}
+                                <td class="text-success">R$ {{ carteira.valor }}</td>
+                            {% else %}
+                                <td class="text-danger">- R$ {{ carteira.valor }}</td>
+                            {% endif %}
+                            <td>R$ {{ carteira.saldo }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

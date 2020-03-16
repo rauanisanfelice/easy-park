@@ -164,7 +164,15 @@ class PageCarteira(View):
     retorno = 'carteira.html'
 
     def get(self, request):
-        return render(request, self.retorno)
+
+        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
+        ultima_compra = carteira_usuario[:1]
+        saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+
+        return render(request, self.retorno, {
+            "saldo": saldo_atual,
+            "carteira_usuario": carteira_usuario,
+        })
 
 
 class PageComprar(View):
