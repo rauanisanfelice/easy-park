@@ -7,11 +7,11 @@ VALUES
   ('R$ 20,00', 20, true,4);
 
 
-INSERT INTO usuario_horasestacionar ( descricao,horas,minutos,ativo,ordem )
+INSERT INTO usuario_horasestacionar ( descricao_horas,horas,minutos,descricao_valor,valor,ativo,ordem )
 VALUES
-  ('00:30',0,30,true,0),
-  ('01:00',1,0,true,1),
-  ('01:30',1,30,true,2),
-  ('02:00',2,0,true,3),
-  ('03:00',3,0,true,4);
+  ('00:30',0,30,'R$ 03,00',3,true,0),
+  ('01:00',1,0,'R$ 04,00',4,true,1),
+  ('01:30',1,30,'R$ 05,00',5,true,2),
+  ('02:00',2,0,'R$ 06,00',6,true,3),
+  ('03:00',3,0,'R$ 07,00',7,true,4);
 
