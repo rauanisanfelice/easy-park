@@ -114,8 +114,23 @@ class PageHistorico(View):
 
 class PageEstacionar(View):
     retorno = 'estacionar.html'
+
     def get(self, request):
-        return render(request, self.retorno)
+        form_class = FormEstacionar
+
+        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
+        if carteira_usuario.count() == 1:
+            ultima_compra = carteira_usuario[:1]
+            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+        else:
+            saldo_atual  = 0
+        saldo_atual = format(saldo_atual, '.2f')
+
+        return render(request, self.retorno, {
+            "form": form_class,
+            "saldo": saldo_atual,
+        })
+        
 
 class PageVeiculo(View):
     retorno = 'veiculo.html'
@@ -166,8 +181,12 @@ class PageCarteira(View):
     def get(self, request):
 
         carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
-        ultima_compra = carteira_usuario[:1]
-        saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+        if carteira_usuario.count() == 1:
+            ultima_compra = carteira_usuario[:1]
+            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+        else:
+            saldo_atual  = 0
+        saldo_atual = format(saldo_atual, '.2f')
 
         return render(request, self.retorno, {
             "saldo": saldo_atual,
@@ -180,8 +199,14 @@ class PageComprar(View):
 
     def get(self, request):
         form_class = FormCompras
-        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')[:1]
-        saldo_atual = list(carteira_usuario.values('saldo'))[0]['saldo']
+        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
+        if carteira_usuario.count() == 1:
+            ultima_compra = carteira_usuario[:1]
+            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+        else:
+            saldo_atual  = 0
+        saldo_atual = format(saldo_atual, '.2f')
+
         return render(request, self.retorno, {
             "form": form_class,
             "saldo": saldo_atual,
