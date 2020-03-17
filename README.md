@@ -20,8 +20,9 @@ Projeto de Estacionamento Rotativo
 3. Inicialização dos container;
     1. Configurando o pgAdmin;
     2. Insert inicial;
-4. Criando arquivo .env;   
-5. Iniciar o servidor.
+4. Criando arquivo .env;
+6. Migrando o BD;
+7. Iniciar o servidor.
 
 ## Ambiente Python;
 
@@ -69,9 +70,15 @@ Copie o conteúdo do arquivo abaixo e realize um insert no Banco.
 > database > inser.sql
 
 
-### Criando arquivo .env
+### Criando arquivo .env;
 
 Copie o conteúdo do arquivo .env-example e crie um novo arquivo .env, cole o conteúdo e altere as variáveis.
+
+### Migrando o BD;
+
+```
+python manage.py migrate
+```
 
 ### Iniciar o servidor
 
