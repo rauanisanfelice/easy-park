@@ -27,40 +27,21 @@
                     <tr>
                         <th>Descrição</th>
                         <th>Data - Hora</th>
-                        <th>Ações</th>
+                        <th>Horas de estacionamento</th>
+                        <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% if paradas %}
+                    {% for parada in paradas %}
                     <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
+                        <td>{{ parada.veiculo.placa }}</td>
+                        <td>{{ parada.data_parada }}</td>
+                        <td>{{ parada.quantidade_horas.descricao_horas }}</td>
+                        <td></td>
                     </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>12/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                    </tr>
+                    {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>
