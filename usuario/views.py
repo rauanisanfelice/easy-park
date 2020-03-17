@@ -12,9 +12,12 @@ from django.views import generic
 from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada
 from .forms import *
 
+import logging
 import datetime
 import pytz
 import json
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def index(request):
@@ -125,6 +128,7 @@ class PagePerfil(View):
                 "sucesso_mensagem": "Dados atualizados com sucesso.",
             })
         except:
+            logger.error(f'Erro - Ao atualizar dados do usuario_id: {request.user.id}')
             return render(request, self.retorno, {
                 "infousuario": infousuario,
                 "error": "True",
@@ -159,10 +163,12 @@ class PageEstacionar(View):
     def get(self, request):
         form_class = FormEstacionar(user=request.user)
         saldo_atual = get_saldo_atual(request.user)
+        veiculos_ativos = Parada.objects.filter(user=request.user)
 
         return render(request, self.retorno, {
             "form": form_class,
             "saldo": saldo_atual,
+            "veiculos_ativos": veiculos_ativos,
         })
     
     def post(self, request):
