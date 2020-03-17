@@ -71,12 +71,13 @@ class Parada(models.Model):
     db_table = 'parada'
     
     veiculo = models.ForeignKey(Veiculo, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+
     quantidade_horas = models.ForeignKey(HorasEstacionar, on_delete=models.PROTECT)
 
     data_parada = models.DateTimeField(auto_now_add=True)
     hora_parada = models.TimeField(auto_now_add=True)
-
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    valido = models.BooleanField(default=True)
 
 
 class Notificacao(models.Model):
