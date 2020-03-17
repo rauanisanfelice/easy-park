@@ -58,7 +58,7 @@ Clique em: Create >> Server
 Conecte no Banco com os seguintes parametros:  
 
 Name: #nome desejado#  
->Host: postgre
+>Host: easy-park-postgre
 >Port: 5432  
 >DB  : postgres  
 >User: admin  
