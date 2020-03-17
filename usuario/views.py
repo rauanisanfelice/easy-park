@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
+from djtriggers.models import Trigger
+
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
@@ -163,7 +165,7 @@ class PageEstacionar(View):
     def get(self, request):
         form_class = FormEstacionar(user=request.user)
         saldo_atual = get_saldo_atual(request.user)
-        veiculos_ativos = Parada.objects.filter(user=request.user)
+        veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
 
         return render(request, self.retorno, {
             "form": form_class,
@@ -227,7 +229,10 @@ class PageEstacionar(View):
                 "error": "True",
                 "error_mensagem": "Campos vazios.",
             })
-        
+
+class AgendarAlerta(Trigger):
+    print('Triger')
+
 
 class PageVeiculo(View):
     retorno = 'veiculo.html'
@@ -310,7 +315,8 @@ class PageComprar(View):
         else:
             saldo_atual  = valor_compra.valor
 
-        carteira_usuario = Carteira(saldo=float(saldo_atual), valor=float(valor_compra.valor), user=request.user, tipo_lancamento='en')
+        usuario = User.objects.get(id=request.user.id)
+        carteira_usuario = Carteira(saldo=float(saldo_atual), valor=float(valor_compra.valor), user=usuario, tipo_lancamento='en')
         carteira_usuario.save()
         
         form_class = FormCompras
