@@ -21,7 +21,7 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        
+
         {% comment %} CARTEIRA {% endcomment %}
         <div class="card-body">
             <!-- APELIDO -->
@@ -36,17 +36,17 @@
             <a href="{% url 'comprar' %}" class="btn btn-outline-info text-center">Comprar mair créditos.</a>
             <a href="{% url 'veiculo' %}" class="btn btn-outline-primary text-center">Cadastrar um novo veículo.</a>
         </div>
-        
+
         {% comment %} MENSAGENS DE RETORNO {% endcomment %}
         {% if error %}
-            <div class="alert alert-danger" role="alert">
-                {{ error_mensagem }}
-            </div>
+        <div class="alert alert-danger" role="alert">
+            {{ error_mensagem }}
+        </div>
         {% endif %}
         {% if sucesso %}
-            <div class="alert alert-success" role="alert">
-                {{ sucesso_mensagem }}
-            </div>
+        <div class="alert alert-success" role="alert">
+            {{ sucesso_mensagem }}
+        </div>
         {% endif %}
 
         {% comment %} TABELA {% endcomment %}
@@ -54,13 +54,32 @@
             <div class="info-box-content">
                 <h4>Selecione quantas horas:</h4>
                 <div class="row">
-                    <form action="." method="post" class="form">{% csrf_token %}
-                        {% bootstrap_field form.horarios show_label=False %}
-                        {% bootstrap_field form.veiculos %}
-                        {% buttons %}
+                    <div class="col-6">
+                        <form action="." method="post" class="form">{% csrf_token %}
+                            {% bootstrap_field form.horarios show_label=False %}
+                            {% bootstrap_field form.veiculos %}
+                            {% buttons %}
                             <button type="submit" class="btn btn-lg btn-primary">Comprar</button>
-                        {% endbuttons %}
-                    </form>
+                            {% endbuttons %}
+                        </form>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            {% if veiculos_ativos %}
+                                {% for veiculo_ativo in veiculos_ativos %}
+                                    <div class="col-6">
+                                        <div class="info-box bg-info">
+                                            <span class="info-box-icon"><i class="fas fa-car"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">{{ veiculo_ativo.veiculo.placa}}</span>
+                                                <span class="info-box-number NumberCounter"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,4 +90,33 @@
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
+<script>
+    var countDownDate = new Date("Mar 17, 2020 11:40:25").getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementByName("NumberCounter").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+</script>
+
 {% endblock %}
