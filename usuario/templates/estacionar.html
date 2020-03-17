@@ -1,5 +1,6 @@
 {% extends 'template.html' %}
 {% load static %}
+{% load bootstrap4 %}
 
 {% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
 {% block title %}Estacionar{% endblock %}
@@ -33,11 +34,34 @@
                 </div>
             </div>
             <a href="{% url 'comprar' %}" class="btn btn-outline-info text-center">Comprar mair créditos.</a>
+            <a href="{% url 'veiculo' %}" class="btn btn-outline-primary text-center">Cadastrar um novo veículo.</a>
         </div>
-
+        
+        {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error_mensagem }}
+            </div>
+        {% endif %}
+        {% if sucesso %}
+            <div class="alert alert-success" role="alert">
+                {{ sucesso_mensagem }}
+            </div>
+        {% endif %}
 
         {% comment %} TABELA {% endcomment %}
-        <div class="">
+        <div class="card-body">
+            <div class="info-box-content">
+                <h4>Selecione quantas horas:</h4>
+                <div class="row">
+                    <form action="." method="post" class="form">{% csrf_token %}
+                        {% bootstrap_form form %}
+                        {% buttons %}
+                            <button type="submit" class="btn btn-lg btn-primary">Comprar</button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+            </div>
         </div>
 
     </div>
