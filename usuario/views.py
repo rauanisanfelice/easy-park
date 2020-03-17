@@ -260,10 +260,11 @@ class PageVeiculo(View):
         id_veiculo = var_delete.get('id_veiculo')
 
         delVeiculos = Veiculo.objects.get(id=id_veiculo)        
-        if check_veiculo_horario(delVeiculos):
+        if check_veiculo_horario(request, delVeiculos):
             delVeiculos.ativo = False
             delVeiculos.save()
             retorno = { "retorno" : True }
+
         else:
             # VEICULO JA ESTA EM USO
             retorno = { "retorno" : False }
