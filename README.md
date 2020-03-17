@@ -19,9 +19,11 @@ Projeto de Estacionamento Rotativo
 2. Instalando dependências;
 3. Inicialização dos container;
     1. Configurando o pgAdmin;
-4. Iniciar o servidor.
+    2. Insert inicial;
+4. Criando arquivo .env;   
+5. Iniciar o servidor.
 
-## Ambiente Python
+## Ambiente Python;
 
 ```
 virtualenv -p python3 env
@@ -34,7 +36,7 @@ source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
-### Inicialização dos container
+### Inicialização dos container;
 
 ```
 docker-compose up -d
@@ -61,15 +63,20 @@ Name: #nome desejado#
 >User: admin  
 >Pass: docker123
 
-### Iniciar o servidor.
+#### Insert inicial;
+
+Copie o conteúdo do arquivo abaixo e realize um insert no Banco.
+> database > inser.sql
+
+
+### Criando arquivo .env
+
+Copie o conteúdo do arquivo .env-example e crie um novo arquivo .env, cole o conteúdo e altere as variáveis.
+
+### Iniciar o servidor
 
 ```
 python manage.py runserver 8000 --noreload
 ```
 
 [Site](http://localhost:8000)
-
-
-### Criando arquivo .env
-
-Copie o conteúdo do arquivo .env-example e crie um novo arquivo .env, cole o conteúdo e altere as variáveis.
