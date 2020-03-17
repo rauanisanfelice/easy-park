@@ -9,14 +9,52 @@ from django.contrib.auth.decorators import login_required
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
-from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira
+from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada
 from .forms import *
 
+import datetime
+import pytz
 import json
 
+@login_required
 def index(request):
     return redirect('login')
 
+
+def get_saldo_atual(user):
+    carteira_usuario = Carteira.objects.filter(user=user.id).order_by('-data_insercao')
+    if carteira_usuario.count() >= 1:
+        ultima_compra = carteira_usuario[:1]
+        saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
+    else:
+        saldo_atual  = 0
+    return format(saldo_atual, '.2f')
+
+
+@login_required
+def check_veiculo_horario(request, veiculo):
+    paradas_veiculos = Parada.objects.filter(user=request.user.id, veiculo__id=veiculo.id).order_by('-id')[:1]
+    if paradas_veiculos.count() == 0:
+        return True
+    else:
+        data_parada = list(paradas_veiculos.values('data_parada'))[0]['data_parada']
+        id_horas = list(paradas_veiculos.values('quantidade_horas'))[0]['quantidade_horas']
+
+        quantidade_horas = HorasEstacionar.objects.get(id=id_horas)
+        data_validar = data_parada + datetime.timedelta(hours=quantidade_horas.horas, minutes=quantidade_horas.minutos)
+        
+        # CONVERTE DATA PARA SAO PAULO
+        hoje = datetime.datetime.now()
+        hoje = hoje.astimezone(pytz.timezone('America/Sao_Paulo'))
+        data_parada = data_parada.astimezone(pytz.timezone('America/Sao_Paulo'))
+        data_validar = data_validar.astimezone(pytz.timezone('America/Sao_Paulo'))
+
+        if hoje > data_parada and hoje < data_validar:
+            # DENTRO DO PERIDO
+            return False
+        else:
+            # FORA DO PERIDO
+            return True
 
 class Home(View):
     retorno = 'home.html'
@@ -109,33 +147,86 @@ class PageNotificacoes(View):
 class PageHistorico(View):
     retorno = 'historico.html'
     def get(self, request):
-        return render(request, self.retorno)
+        paradas = Parada.objects.filter(user=request.user.id).order_by('-data_parada')
+        return render(request, self.retorno,{
+            "paradas": paradas,
+        })
 
 
 class PageEstacionar(View):
     retorno = 'estacionar.html'
 
     def get(self, request):
-        form_class = FormEstacionar
-
-        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
-        if carteira_usuario.count() == 1:
-            ultima_compra = carteira_usuario[:1]
-            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
-        else:
-            saldo_atual  = 0
-        saldo_atual = format(saldo_atual, '.2f')
+        form_class = FormEstacionar(user=request.user)
+        saldo_atual = get_saldo_atual(request.user)
 
         return render(request, self.retorno, {
             "form": form_class,
             "saldo": saldo_atual,
         })
+    
+    def post(self, request):
+        form_class = FormEstacionar(user=request.user)
+
+        hora = request.POST.get('horarios')
+        placa = request.POST.get('veiculos')
+        
+        saldo_atual = get_saldo_atual(request.user)
+
+        # VERIFICA SE FOI SELECIONADO OS CAMPOS
+        if hora and placa:
+            hora_selecionada = HorasEstacionar.objects.get(id=hora)
+            veiculo = Veiculo.objects.get(id=placa)
+
+            # VERIFICA SE POSSUI SALDO
+            if float(saldo_atual) >= hora_selecionada.valor.real:
+                # VERIFICA SE JA POSSUI UMA PARADA
+                if check_veiculo_horario(request, veiculo):
+                    # REALIZA PARADA
+                    parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
+                    parada.save()
+
+                    # ATUALIZA SALDO
+                    saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
+                    saldo_atual = saldo_atualizado
+                    carteira_atualizar = Carteira(valor=hora_selecionada.valor.real, saldo=saldo_atualizado, tipo_lancamento='sa', user=request.user)
+                    carteira_atualizar.save()
+                    
+                    return render(request, self.retorno, {
+                        "form": form_class,
+                        "saldo": saldo_atual,
+                        "sucesso": "True",
+                        "sucesso_mensagem": "Veículo ativo com sucesso.",
+                    })
+
+                else:
+                    return render(request, self.retorno, {
+                        "form": form_class,
+                        "saldo": saldo_atual,
+                        "error": "True",
+                        "error_mensagem": "Veículo já está ativo.",
+                    })
+
+            else:
+                return render(request, self.retorno, {
+                    "form": form_class,
+                    "saldo": saldo_atual,
+                    "error": "True",
+                    "error_mensagem": "Saldo insuficiente.",
+                })
+        else:
+            return render(request, self.retorno, {
+                "form": form_class,
+                "saldo": saldo_atual,
+                "error": "True",
+                "error_mensagem": "Campos vazios.",
+            })
         
 
 class PageVeiculo(View):
     retorno = 'veiculo.html'
     def get(self, request):
-        veiculos = Veiculo.objects.all().filter(user=request.user.id)
+        veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
         return render(request, self.retorno, {
             "veiculos": veiculos
         })
@@ -143,7 +234,7 @@ class PageVeiculo(View):
     def post(self, request):
         var_apelido = request.POST.get('apelido')
         var_placa = request.POST.get('placa')
-        veiculos = Veiculo.objects.all().filter(user=request.user.id)
+        veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
 
         if var_apelido or var_placa:
             newVeiculo = Veiculo(apelido=var_apelido, placa=var_placa, user=request.user)
@@ -168,26 +259,23 @@ class PageVeiculo(View):
         var_delete = QueryDict(request.body)
         id_veiculo = var_delete.get('id_veiculo')
 
-        delVeiculos = Veiculo.objects.get(id=id_veiculo)
-        delVeiculos.delete()
-
-        retorno = { "retorno" : True }
+        delVeiculos = Veiculo.objects.get(id=id_veiculo)        
+        if check_veiculo_horario(delVeiculos):
+            delVeiculos.ativo = False
+            delVeiculos.save()
+            retorno = { "retorno" : True }
+        else:
+            # VEICULO JA ESTA EM USO
+            retorno = { "retorno" : False }
+        
         return HttpResponse(json.dumps(retorno), content_type="application/json")
-
 
 class PageCarteira(View):
     retorno = 'carteira.html'
 
     def get(self, request):
-
+        saldo_atual = get_saldo_atual(request.user)
         carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
-        if carteira_usuario.count() == 1:
-            ultima_compra = carteira_usuario[:1]
-            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
-        else:
-            saldo_atual  = 0
-        saldo_atual = format(saldo_atual, '.2f')
-
         return render(request, self.retorno, {
             "saldo": saldo_atual,
             "carteira_usuario": carteira_usuario,
@@ -199,14 +287,7 @@ class PageComprar(View):
 
     def get(self, request):
         form_class = FormCompras
-        carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
-        if carteira_usuario.count() == 1:
-            ultima_compra = carteira_usuario[:1]
-            saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
-        else:
-            saldo_atual  = 0
-        saldo_atual = format(saldo_atual, '.2f')
-
+        saldo_atual = get_saldo_atual(request.user)
         return render(request, self.retorno, {
             "form": form_class,
             "saldo": saldo_atual,
