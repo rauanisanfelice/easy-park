@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
-from djtriggers.models import Trigger
+#from djtriggers.models import Trigger
 
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
@@ -230,8 +230,8 @@ class PageEstacionar(View):
                 "error_mensagem": "Campos vazios.",
             })
 
-class AgendarAlerta(Trigger):
-    print('Triger')
+# class AgendarAlerta(Trigger):
+#     print('Triger')
 
 
 class PageVeiculo(View):
