@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from django.db.models import CharField, Value as V
+from django.db.models.functions import Concat
+
 from .models import ValoresCompra, HorasEstacionar, Veiculo
 
 class SignUpForm(UserCreationForm):
@@ -43,5 +46,5 @@ class FormEstacionar(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super(FormEstacionar, self).__init__(*args, **kwargs)
-        self.fields['horarios'].choices = HorasEstacionar.objects.filter(ativo=True).order_by('ordem').values_list('id','descricao_horas')
+        self.fields['horarios'].choices = HorasEstacionar.objects.filter(ativo=True).annotate(resultado=Concat('descricao_horas', V(' - '), 'descricao_valor')).order_by('ordem').values_list('id','resultado')
         self.fields['veiculos'].choices = Veiculo.objects.filter(user=user, ativo=True).values_list('id','placa')

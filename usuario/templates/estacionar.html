@@ -55,7 +55,8 @@
                 <h4>Selecione quantas horas:</h4>
                 <div class="row">
                     <form action="." method="post" class="form">{% csrf_token %}
-                        {% bootstrap_form form %}
+                        {% bootstrap_field form.horarios show_label=False %}
+                        {% bootstrap_field form.veiculos %}
                         {% buttons %}
                             <button type="submit" class="btn btn-lg btn-primary">Comprar</button>
                         {% endbuttons %}
