@@ -7,8 +7,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('account/', include('django.contrib.auth.urls'), name='login'),
-
+    path('accounts/', include('django.contrib.auth.urls'), name='login'),
+    
     path('', include('usuario.urls')),
     path('administrativo/', include('administrativo.urls')),
     path('vendedor/', include('vendedor.urls')),
