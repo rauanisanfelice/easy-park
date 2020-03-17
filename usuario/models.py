@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class InfoUsuario(models.Model):
     db_table = 'infoUsuario'
     
@@ -17,6 +18,7 @@ class Funcionario(models.Model):
     ativo = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
+
 class Carteira(models.Model):
     db_table = 'carteira'
 
@@ -30,6 +32,7 @@ class Carteira(models.Model):
     tipo_lancamento = models.CharField(choices=cho_status, max_length=2, default=cho_status[0][0])
     data_insercao = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+
 
 class Veiculo(models.Model):
     db_table = 'veiculo'
@@ -49,6 +52,7 @@ class ValoresCompra(models.Model):
     ativo = models.BooleanField(default=True)
     ordem = models.IntegerField()
 
+
 class HorasEstacionar(models.Model):
     db_table = 'horasestacionar'
 
@@ -62,6 +66,7 @@ class HorasEstacionar(models.Model):
     ativo = models.BooleanField(default=True)
     ordem = models.IntegerField()
 
+
 class Parada(models.Model):
     db_table = 'parada'
     
@@ -70,6 +75,9 @@ class Parada(models.Model):
 
     data_parada = models.DateTimeField(auto_now_add=True)
     hora_parada = models.TimeField(auto_now_add=True)
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+
 
 class Notificacao(models.Model):
     db_table = 'notificacao'
