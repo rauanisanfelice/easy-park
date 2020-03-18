@@ -81,6 +81,13 @@ class Parada(models.Model):
 
 
 class TipoNotificacao(models.Model):
+    CHOICE_TIPO_NOTIFICACAO = [
+        ('NOTIC', 'NOTIFICACAO'),
+        ('ESGOT', 'ESGOTOU O TEMPO'),
+        ('RETCA', 'RETIRAR O CARRO'),
+    ]
+    
+    tipo = models.CharField(max_length=5, choices=CHOICE_TIPO_NOTIFICACAO)
     descricao_titulo = models.CharField(max_length=100)
     descricao_full = models.CharField(max_length=150)
     ativo = models.BooleanField(default=True)
