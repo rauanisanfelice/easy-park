@@ -80,12 +80,19 @@ class Parada(models.Model):
     valido = models.BooleanField(default=True)
 
 
+class TipoNotificacao(models.Model):
+    descricao_titulo = models.CharField(max_length=100)
+    descricao_full = models.CharField(max_length=150)
+    ativo = models.BooleanField(default=True)
+
+
 class Notificacao(models.Model):
     db_table = 'notificacao'
     verbose_name_plural = 'notificacoes'
 
     paradas = models.ForeignKey(Parada, on_delete=models.PROTECT)
-    funcionario = models.ForeignKey(User, on_delete=models.PROTECT)
+    tipo_notificao = models.ForeignKey(TipoNotificacao, on_delete=models.PROTECT)
+    funcionario = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+
     data_notificacao = models.TimeField(auto_now_add=True)
-    descricao_notificao =models.CharField(max_length=100)
     data_lida = models.TimeField(null=True)
