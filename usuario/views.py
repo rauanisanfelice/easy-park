@@ -72,9 +72,10 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
     tipo_not = TipoNotificacao.objects.get(tipo=tipo_da_notificacao)
 
     notificacao = Notificacao(parada=parada, tipo_notificacao=tipo_not, user=request.user)
-    if tipo_da_notificacao == 'ESGOT':
-        notificacao.ativo = False
     notificacao.save()
+    if tipo_da_notificacao == 'ESGOT':
+        parada.valido = False
+        parada.save()
 
     if tipo_da_notificacao == 'NOTIC':
         # AGENDA NOTIFICACAO
@@ -172,8 +173,7 @@ class PageNotificacoes(View):
     retorno = 'notificacoes.html'
 
     def get(self, request):
-        notificacoes = Notificacao.objects.filter(user=request.user)
-        veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
+        notificacoes = Notificacao.objects.filter(user=request.user).order_by('-data_notificacao')
         return render(request, self.retorno, {
             'notificacoes': notificacoes,
         })
