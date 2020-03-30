@@ -70,9 +70,20 @@
                                     <div class="col-6">
                                         <div class="info-box bg-info">
                                             <span class="info-box-icon"><i class="fas fa-car"></i></span>
-                                            <div class="info-box-content">
-                                                <span class="info-box-text">{{ veiculo_ativo.veiculo.placa}}</span>
-                                                <span class="info-box-number NumberCounter"></span>
+                                            <div class="info-box-content box-veiculo-ativo">
+                                                <span class="info-box-text">{{ veiculo_ativo.veiculo.placa }}</span>
+                                                <span class="info-box-text">{{ veiculo_ativo.data_parada }}</span>
+                                                <div style="display: none;">
+                                                    <span class="info-mes">{{ veiculo_ativo.data_parada|date:"M" }}</span>
+                                                    <span class="info-dia">{{ veiculo_ativo.data_parada|date:"d" }}</span>
+                                                    <span class="info-ano">{{ veiculo_ativo.data_parada|date:"Y" }}</span>
+                                                    <span class="info-hora">{{ veiculo_ativo.data_parada|date:"H" }}</span>
+                                                    <span class="info-minuto">{{ veiculo_ativo.data_parada|date:"i" }}</span>
+
+                                                    <span class="info-horas-contratadas">{{ veiculo_ativo.quantidade_horas.horas }}</span>
+                                                    <span class="info-minutos-contratados">{{ veiculo_ativo.quantidade_horas.minutos }}</span>
+                                                </div>
+                                                <span class="info-box-number countdown"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -91,31 +102,71 @@
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
 <script>
-    var countDownDate = new Date("Mar 17, 2020 11:40:25").getTime();
+    //objeto carro estacionado
+    var carrosEstacionados = []
+
+    var veiculosAtivos = document.getElementsByClassName('box-veiculo-ativo');
+
+    for(veiculoAtivo of veiculosAtivos){
+        //pegando do html o inicio
+        var mesStart = veiculoAtivo.querySelector('.info-mes').innerText;
+        var diaStart = parseInt(veiculoAtivo.querySelector('.info-dia').innerText);
+        var anoStart = parseInt(veiculoAtivo.querySelector('.info-ano').innerText);
+        var horaStart = parseInt(veiculoAtivo.querySelector('.info-hora').innerText);
+        var minStart = parseInt(veiculoAtivo.querySelector('.info-minuto').innerText);
+
+        //pegando do html quanto tempo vai ficar
+        var horasContratadas = parseInt(veiculoAtivo.querySelector('.info-horas-contratadas').innerText);
+        var minsContratados = parseInt(veiculoAtivo.querySelector('.info-minutos-contratados').innerText);
+ 
+        //hora inicio
+        var startParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + horaStart + ':' + minStart);
+
+        //hora fim (hora inicio + horas e minutos contratados)
+        var endParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + (horaStart + horasContratadas) + ':' + (minStart + minsContratados));
+
+        console.log('inicio: ' + startParking);
+        console.log('fim: ' + endParking);
+        carrosEstacionados.push(endParking);
+    }
+
+    console.log('carrosEstacionados:');
+    console.log(carrosEstacionados);
+    console.log('-----');
 
     // Update the count down every 1 second
     var x = setInterval(function() {
 
-        // Get today's date and time
-        var now = new Date().getTime();
+        //fazer o contador para cada carro
+        for(item in carrosEstacionados){
+            console.log('teste');
+            console.log(item);
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+            // Get today's date and time
+            var now = new Date().getTime();
 
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Find the distance between now and the count down date
+            var distance = carrosEstacionados[item] - now;
+            console.log('***');
+            console.log(distance);
 
-        // Display the result in the element with id="demo"
-        document.getElementByName("NumberCounter").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // If the count down is finished, write some text
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("demo").innerHTML = "EXPIRED";
+            veiculosAtivos[item].querySelector('.countdown').innerText = hours + "h " + minutes + "m " + seconds + "s ";
+            
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                veiculosAtivos[item].querySelector('.countdown').innerText = "Expirado";
+            }
+            
         }
+
+
+        
     }, 1000);
 </script>
 

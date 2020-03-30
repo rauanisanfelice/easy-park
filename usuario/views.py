@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
+<<<<<<< HEAD
+=======
+#from djtriggers.models import Trigger
+
+>>>>>>> 36387034d04d405eb7ff9f69f57ea7256b18b221
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
