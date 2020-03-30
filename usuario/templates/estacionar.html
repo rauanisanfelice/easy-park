@@ -101,73 +101,57 @@
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
-<script>
-    //objeto carro estacionado
-    var carrosEstacionados = []
+    <script>
+        //objeto carro estacionado
+        var carrosEstacionados = []
 
-    var veiculosAtivos = document.getElementsByClassName('box-veiculo-ativo');
+        var veiculosAtivos = document.getElementsByClassName('box-veiculo-ativo');
 
-    for(veiculoAtivo of veiculosAtivos){
-        //pegando do html o inicio
-        var mesStart = veiculoAtivo.querySelector('.info-mes').innerText;
-        var diaStart = parseInt(veiculoAtivo.querySelector('.info-dia').innerText);
-        var anoStart = parseInt(veiculoAtivo.querySelector('.info-ano').innerText);
-        var horaStart = parseInt(veiculoAtivo.querySelector('.info-hora').innerText);
-        var minStart = parseInt(veiculoAtivo.querySelector('.info-minuto').innerText);
+        for(veiculoAtivo of veiculosAtivos){
+            //pegando do html o inicio
+            var mesStart = veiculoAtivo.querySelector('.info-mes').innerText;
+            var diaStart = parseInt(veiculoAtivo.querySelector('.info-dia').innerText);
+            var anoStart = parseInt(veiculoAtivo.querySelector('.info-ano').innerText);
+            var horaStart = parseInt(veiculoAtivo.querySelector('.info-hora').innerText);
+            var minStart = parseInt(veiculoAtivo.querySelector('.info-minuto').innerText);
 
-        //pegando do html quanto tempo vai ficar
-        var horasContratadas = parseInt(veiculoAtivo.querySelector('.info-horas-contratadas').innerText);
-        var minsContratados = parseInt(veiculoAtivo.querySelector('.info-minutos-contratados').innerText);
- 
-        //hora inicio
-        var startParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + horaStart + ':' + minStart);
+            //pegando do html quanto tempo vai ficar
+            var horasContratadas = parseInt(veiculoAtivo.querySelector('.info-horas-contratadas').innerText);
+            var minsContratados = parseInt(veiculoAtivo.querySelector('.info-minutos-contratados').innerText);
+    
+            //hora inicio
+            var startParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + horaStart + ':' + minStart);
 
-        //hora fim (hora inicio + horas e minutos contratados)
-        var endParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + (horaStart + horasContratadas) + ':' + (minStart + minsContratados));
+            //hora fim (hora inicio + horas e minutos contratados)
+            var endParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + (horaStart + horasContratadas) + ':' + (minStart + minsContratados));
 
-        console.log('inicio: ' + startParking);
-        console.log('fim: ' + endParking);
-        carrosEstacionados.push(endParking);
-    }
-
-    console.log('carrosEstacionados:');
-    console.log(carrosEstacionados);
-    console.log('-----');
-
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-
-        //fazer o contador para cada carro
-        for(item in carrosEstacionados){
-            console.log('teste');
-            console.log(item);
-
-            // Get today's date and time
-            var now = new Date().getTime();
-
-            // Find the distance between now and the count down date
-            var distance = carrosEstacionados[item] - now;
-            console.log('***');
-            console.log(distance);
-
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            veiculosAtivos[item].querySelector('.countdown').innerText = hours + "h " + minutes + "m " + seconds + "s ";
-            
-            // If the count down is finished, write some text
-            if (distance < 0) {
-                veiculosAtivos[item].querySelector('.countdown').innerText = "Expirado";
-            }
-            
+            carrosEstacionados.push(endParking);
         }
 
+        // Update the count down every 1 second
+        var x = setInterval(function() {
 
-        
-    }, 1000);
-</script>
+            //fazer o contador para cada carro
+            for(item in carrosEstacionados){
+                // Get today's date and time
+                var now = new Date().getTime();
 
+                // Find the distance between now and the count down date
+                var distance = carrosEstacionados[item] - now;
+                
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                veiculosAtivos[item].querySelector('.countdown').innerText = hours + "h " + minutes + "m " + seconds + "s ";
+                
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    veiculosAtivos[item].querySelector('.countdown').innerText = "Expirado";
+                }
+            }        
+        }, 1000);
+    </script>
 {% endblock %}
