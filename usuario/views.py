@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
-from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada
+from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
 from .forms import *
 
 import logging
@@ -62,8 +62,23 @@ def check_veiculo_horario(request, veiculo):
             return True
 
 
-def AgendarAlerta():
-    print('Triger')
+def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
+    id_veiculo = request.POST.get('veiculos')
+    id_horarario = request.POST.get('horarios')
+    
+    veiculo = Veiculo.objects.get(id=id_veiculo)
+    horarario = HorasEstacionar.objects.get(id=id_horarario)
+    tipo_not = TipoNotificacao.objects.get(tipo=tipo_da_notificacao)
+
+    notificacao = Notificacao(parada=parada, tipo_notificacao=tipo_not, user=request.user)
+    notificacao.save()
+
+    if tipo_da_notificacao == 'NOTIC':
+        # AGENDA NOTIFICACAO
+        data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos)
+        delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
+        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada.id, 'NOTIC'])
+        t.start()
 
 class Home(View):
     retorno = 'home.html'
@@ -194,26 +209,37 @@ class PageEstacionar(View):
             if float(saldo_atual) >= hora_selecionada.valor.real:
                 # VERIFICA SE JA POSSUI UMA PARADA
                 if check_veiculo_horario(request, veiculo):
-                    # REALIZA PARADA
-                    parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
-                    # parada.save()
+                    try:
+                        # REALIZA PARADA
+                        parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
+                        parada.save()
 
-                    # ATUALIZA SALDO
-                    saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
-                    saldo_atual = saldo_atualizado
-                    carteira_atualizar = Carteira(valor=hora_selecionada.valor.real, saldo=saldo_atualizado, tipo_lancamento='sa', user=request.user)
-                    # carteira_atualizar.save()
+                        # ATUALIZA SALDO
+                        saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
+                        saldo_atual = saldo_atualizado
+                        carteira_atualizar = Carteira(valor=hora_selecionada.valor.real, saldo=saldo_atualizado, tipo_lancamento='sa', user=request.user)
+                        # carteira_atualizar.save()
 
-                    # AGENDA NOTIFICACAO
-                    t = threading.Timer(20, AgendarAlerta)
-                    t.start()
-                    
-                    return render(request, self.retorno, {
-                        "form": form_class,
-                        "saldo": saldo_atual,
-                        "sucesso": "True",
-                        "sucesso_mensagem": "Veículo ativo com sucesso.",
-                    })
+                        # AGENDA NOTIFICACAO
+                        data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos - 5)
+                        delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
+                        t = threading.Timer(20, triggerAlertaUsuario, [request, parada, 'NOTIC'])
+                        t.start()
+                        
+                        return render(request, self.retorno, {
+                            "form": form_class,
+                            "saldo": saldo_atual,
+                            "sucesso": "True",
+                            "sucesso_mensagem": "Veículo ativo com sucesso.",
+                        })
+                    except:
+                        logger.error(f'Erro ao estacionar - Usuario ID ({request.user.id}), Veiculo ID ({veiculo.id}), Parada ID ({parada.id})')
+                        return render(request, self.retorno, {
+                            "form": form_class,
+                            "saldo": saldo_atual,
+                            "error": "True",
+                            "error_mensagem": "Erro ao estacionar o veículo.",
+                        })
 
                 else:
                     return render(request, self.retorno, {
