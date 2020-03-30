@@ -26,8 +26,8 @@ def index(request):
     return redirect('login')
 
 
-def get_saldo_atual(user):
-    carteira_usuario = Carteira.objects.filter(user=user.id).order_by('-data_insercao')
+def get_saldo_atual(request):
+    carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
     if carteira_usuario.count() >= 1:
         ultima_compra = carteira_usuario[:1]
         saldo_atual = list(ultima_compra.values('saldo'))[0]['saldo']
@@ -60,6 +60,10 @@ def check_veiculo_horario(request, veiculo):
         else:
             # FORA DO PERIDO
             return True
+
+
+class AgendarAlerta(Trigger):
+    print('Triger')
 
 class Home(View):
     retorno = 'home.html'
@@ -164,7 +168,7 @@ class PageEstacionar(View):
 
     def get(self, request):
         form_class = FormEstacionar(user=request.user)
-        saldo_atual = get_saldo_atual(request.user)
+        saldo_atual = get_saldo_atual(request)
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
 
         return render(request, self.retorno, {
@@ -179,7 +183,7 @@ class PageEstacionar(View):
         hora = request.POST.get('horarios')
         placa = request.POST.get('veiculos')
         
-        saldo_atual = get_saldo_atual(request.user)
+        saldo_atual = get_saldo_atual(request)
 
         # VERIFICA SE FOI SELECIONADO OS CAMPOS
         if hora and placa:
@@ -192,13 +196,16 @@ class PageEstacionar(View):
                 if check_veiculo_horario(request, veiculo):
                     # REALIZA PARADA
                     parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
-                    parada.save()
+                    # parada.save()
 
                     # ATUALIZA SALDO
                     saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
                     saldo_atual = saldo_atualizado
                     carteira_atualizar = Carteira(valor=hora_selecionada.valor.real, saldo=saldo_atualizado, tipo_lancamento='sa', user=request.user)
-                    carteira_atualizar.save()
+                    # carteira_atualizar.save()
+
+                    # AGENDA NOTIFICACAO
+
                     
                     return render(request, self.retorno, {
                         "form": form_class,
@@ -229,9 +236,6 @@ class PageEstacionar(View):
                 "error": "True",
                 "error_mensagem": "Campos vazios.",
             })
-
-class AgendarAlerta(Trigger):
-    print('Triger')
 
 
 class PageVeiculo(View):
@@ -286,7 +290,7 @@ class PageCarteira(View):
     retorno = 'carteira.html'
 
     def get(self, request):
-        saldo_atual = get_saldo_atual(request.user)
+        saldo_atual = get_saldo_atual(request)
         carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
         return render(request, self.retorno, {
             "saldo": saldo_atual,
@@ -299,7 +303,7 @@ class PageComprar(View):
 
     def get(self, request):
         form_class = FormCompras
-        saldo_atual = get_saldo_atual(request.user)
+        saldo_atual = get_saldo_atual(request)
         return render(request, self.retorno, {
             "form": form_class,
             "saldo": saldo_atual,
