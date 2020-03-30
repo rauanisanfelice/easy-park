@@ -199,6 +199,7 @@ class PageEstacionar(View):
         placa = request.POST.get('veiculos')
         
         saldo_atual = get_saldo_atual(request)
+        veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
 
         # VERIFICA SE FOI SELECIONADO OS CAMPOS
         if hora and placa:
@@ -229,6 +230,7 @@ class PageEstacionar(View):
                         return render(request, self.retorno, {
                             "form": form_class,
                             "saldo": saldo_atual,
+                            "veiculos_ativos": veiculos_ativos,
                             "sucesso": "True",
                             "sucesso_mensagem": "Veículo ativo com sucesso.",
                         })
@@ -237,6 +239,7 @@ class PageEstacionar(View):
                         return render(request, self.retorno, {
                             "form": form_class,
                             "saldo": saldo_atual,
+                            "veiculos_ativos": veiculos_ativos,
                             "error": "True",
                             "error_mensagem": "Erro ao estacionar o veículo.",
                         })
@@ -245,6 +248,7 @@ class PageEstacionar(View):
                     return render(request, self.retorno, {
                         "form": form_class,
                         "saldo": saldo_atual,
+                        "veiculos_ativos": veiculos_ativos,
                         "error": "True",
                         "error_mensagem": "Veículo já está ativo.",
                     })
@@ -253,6 +257,7 @@ class PageEstacionar(View):
                 return render(request, self.retorno, {
                     "form": form_class,
                     "saldo": saldo_atual,
+                    "veiculos_ativos": veiculos_ativos,
                     "error": "True",
                     "error_mensagem": "Saldo insuficiente.",
                 })
@@ -260,6 +265,7 @@ class PageEstacionar(View):
             return render(request, self.retorno, {
                 "form": form_class,
                 "saldo": saldo_atual,
+                "veiculos_ativos": veiculos_ativos,
                 "error": "True",
                 "error_mensagem": "Campos vazios.",
             })
