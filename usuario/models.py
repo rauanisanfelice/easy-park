@@ -97,8 +97,8 @@ class Notificacao(models.Model):
     db_table = 'notificacao'
     verbose_name_plural = 'notificacoes'
 
-    paradas = models.ForeignKey(Parada, on_delete=models.PROTECT)
-    tipo_notificao = models.ForeignKey(TipoNotificacao, on_delete=models.PROTECT)
+    parada = models.ForeignKey(Parada, on_delete=models.PROTECT)
+    tipo_notificacao = models.ForeignKey(TipoNotificacao, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="notificao_user")
     funcionario = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
