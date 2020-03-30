@@ -82,6 +82,7 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
 
 class Home(View):
     retorno = 'home.html'
+
     def get(self, request):
         return render(request, self.retorno)
 
@@ -219,7 +220,7 @@ class PageEstacionar(View):
                         saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
                         saldo_atual = saldo_atualizado
                         carteira_atualizar = Carteira(valor=hora_selecionada.valor.real, saldo=saldo_atualizado, tipo_lancamento='sa', user=request.user)
-                        # carteira_atualizar.save()
+                        carteira_atualizar.save()
 
                         # AGENDA NOTIFICACAO
                         data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos - 5)
@@ -273,6 +274,7 @@ class PageEstacionar(View):
 
 class PageVeiculo(View):
     retorno = 'veiculo.html'
+    
     def get(self, request):
         veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
         return render(request, self.retorno, {
