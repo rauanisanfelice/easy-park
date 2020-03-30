@@ -4,4 +4,3 @@ psycopg2-binary==2.8.4
 django-environ==0.4.5
 python-decouple==3.3
 django-bootstrap4==1.1.1
-django-triggers==2.1.1

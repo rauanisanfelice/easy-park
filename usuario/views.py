@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
-from djtriggers.models import Trigger
-
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
@@ -18,6 +16,8 @@ import logging
 import datetime
 import pytz
 import json
+import threading
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def check_veiculo_horario(request, veiculo):
             return True
 
 
-class AgendarAlerta(Trigger):
+def AgendarAlerta():
     print('Triger')
 
 class Home(View):
@@ -205,7 +205,8 @@ class PageEstacionar(View):
                     # carteira_atualizar.save()
 
                     # AGENDA NOTIFICACAO
-
+                    t = threading.Timer(20, AgendarAlerta)
+                    t.start()
                     
                     return render(request, self.retorno, {
                         "form": form_class,
