@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
+
 from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
 from .forms import *
 
@@ -71,14 +72,17 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
     tipo_not = TipoNotificacao.objects.get(tipo=tipo_da_notificacao)
 
     notificacao = Notificacao(parada=parada, tipo_notificacao=tipo_not, user=request.user)
+    if tipo_da_notificacao == 'ESGOT':
+        notificacao.ativo = False
     notificacao.save()
 
     if tipo_da_notificacao == 'NOTIC':
         # AGENDA NOTIFICACAO
         data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos)
         delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
-        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada.id, 'NOTIC'])
+        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 'ESGOT'])
         t.start()
+
 
 class Home(View):
     retorno = 'home.html'
@@ -166,8 +170,13 @@ class PageInformacoes(View):
 
 class PageNotificacoes(View):
     retorno = 'notificacoes.html'
+
     def get(self, request):
-        return render(request, self.retorno)
+        notificacoes = Notificacao.objects.filter(user=request.user)
+        veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
+        return render(request, self.retorno, {
+            'notificacoes': notificacoes,
+        })
 
 
 class PageHistorico(View):

@@ -28,46 +28,21 @@
                         <th>Descrição</th>
                         <th>Data - Hora</th>
                         <th>Ações</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>12/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Suas horas estão acabando...</td>
-                        <td>10/03/2020 - 10:50</td>
-                        <td><a href="#" ><i class="far fa-eye"></i></a></td>
-                        <td><i class="fas fa-info-circle" style="color: red;"></i></td>
-                    </tr>
+                    {% if notificacoes %}
+                        {% for notificaccao in notificacoes %}
+                            <tr>
+                                <td>{{ notificaccao.tipo_notificacao.descricao_titulo }}</td>
+                                <td>{{ notificaccao.data_notificacao }}</td>
+                                <td>
+                                    <a href="#" ><i class="far fa-eye btn btn-acao-verde"></i></a>
+                                    <a href="#" ><i class="far fa-eye btn btn-acao-verde"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>
