@@ -99,7 +99,8 @@ class Notificacao(models.Model):
 
     paradas = models.ForeignKey(Parada, on_delete=models.PROTECT)
     tipo_notificao = models.ForeignKey(TipoNotificacao, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="notificao_user")
     funcionario = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
-    data_notificacao = models.TimeField(auto_now_add=True)
-    data_lida = models.TimeField(null=True)
+    data_notificacao = models.DateTimeField(auto_now_add=True)
+    data_lida = models.DateTimeField(null=True)
