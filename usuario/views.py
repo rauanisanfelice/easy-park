@@ -6,11 +6,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
-<<<<<<< HEAD
-=======
-#from djtriggers.models import Trigger
-
->>>>>>> 36387034d04d405eb7ff9f69f57ea7256b18b221
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
@@ -228,7 +223,7 @@ class PageEstacionar(View):
                         # AGENDA NOTIFICACAO
                         data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos - 5)
                         delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
-                        t = threading.Timer(20, triggerAlertaUsuario, [request, parada, 'NOTIC'])
+                        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 'NOTIC'])
                         t.start()
                         
                         return render(request, self.retorno, {
