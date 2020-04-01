@@ -74,7 +74,7 @@
                                                 <span class="info-box-text">{{ veiculo_ativo.veiculo.placa }}</span>
                                                 <span class="info-box-text">{{ veiculo_ativo.data_parada }}</span>
                                                 <div style="display: none;">
-                                                    <span class="info-mes">{{ veiculo_ativo.data_parada|date:"M" }}</span>
+                                                    <span class="info-mes">{{ veiculo_ativo.data_parada|date:"m" }}</span>
                                                     <span class="info-dia">{{ veiculo_ativo.data_parada|date:"d" }}</span>
                                                     <span class="info-ano">{{ veiculo_ativo.data_parada|date:"Y" }}</span>
                                                     <span class="info-hora">{{ veiculo_ativo.data_parada|date:"H" }}</span>
@@ -118,7 +118,7 @@
             //pegando do html quanto tempo vai ficar
             var horasContratadas = parseInt(veiculoAtivo.querySelector('.info-horas-contratadas').innerText);
             var minsContratados = parseInt(veiculoAtivo.querySelector('.info-minutos-contratados').innerText);
-    
+            
             //hora inicio
             var startParking = new Date(mesStart + ' ' + diaStart + ', ' + anoStart + ' ' + horaStart + ':' + minStart);
 
