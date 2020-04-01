@@ -28,19 +28,26 @@
                         <th>Descrição</th>
                         <th>Data - Hora</th>
                         <th>Horas de estacionamento</th>
-                        <th>Ação</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if paradas %}
-                    {% for parada in paradas %}
-                    <tr>
-                        <td>{{ parada.veiculo.placa }}</td>
-                        <td>{{ parada.data_parada }}</td>
-                        <td>{{ parada.quantidade_horas.descricao_horas }}</td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
+                        {% for parada in paradas %}
+                        <tr>
+                            <td>{{ parada.veiculo.placa }}</td>
+                            <td>{{ parada.data_parada }}</td>
+                            <td>{{ parada.quantidade_horas.descricao_horas }}</td>
+                            <td>
+                                {% comment %} {{tipo_not}}
+                                {% for tipo_not in parada.notificacao_set %}
+                                    {% if tipo_not.a %}
+                                        <span class="badge bg-danger">Notificado</span>
+                                    {% endif %}
+                                {% endfor %} {% endcomment %}
+                            </td>
+                        </tr>
+                        {% endfor %}
                     {% endif %}
                 </tbody>
             </table>
