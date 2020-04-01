@@ -48,24 +48,34 @@
                     <input name="usuario" type="text" value="{{ user.username }}" class="form-control" id="exampleInputUsuario" placeholder="Usuário" readonly>
                 </div>
 
+                <!-- Estado -->
+                <div class="form-group">
+                    <label for="InputCidade">Estado</label>
+                    <select name="InputEstado" id="InputEstado" class="form-control">
+                        <option value="">Selecione um estado</option>
+                    </select>
+                </div>
+                
                 <!-- Cidade -->
                 <div class="form-group">
-                    <label for="exampleInputCidade">Cidade</label>
+                    <label for="InputCidade">Cidade</label>
                     {% if infousuario %}
-                        <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control" id"exampleInputCidade" placeholder="Cidade">
-                        {% else %}
-                            <input name="cidade" type="text" value="" class="form-control" id"exampleInputCidade" placeholder="Cidade">
-                        {% endif %}
+                        <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control" id="InputCidade" placeholder="Cidade">
+                    {% else %}
+                        <select name="InputCidade" id="InputCidade" class="form-control" disabled>
+                            <option value="">Por favor, selecione um estado</option>
+                        </select>
+                    {% endif %}
                 </div>
 
                 <!-- Telefone -->
                 <div class="form-group">
-                    <label for="exampleInputTelefone">Telefone</label>
+                    <label for="InputTelefone">Telefone</label>
                     <div class="input-group mb-3">
                         {% if infousuario %}
-                            <input name="telefone" type="tel" value="{{ infousuario.telefone }}" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="exampleInputTelefone" placeholder="Telefone">
+                            <input name="telefone" type="tel" value="{{ infousuario.telefone }}" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="InputTelefone" placeholder="Telefone">
                         {% else %}
-                            <input name="telefone" type="tel" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="exampleInputTelefone" placeholder="Telefone">
+                            <input name="telefone" type="tel" class="form-control" maxlength="15" onkeyup="mascara( this, mtel );" id="InputTelefone" placeholder="Telefone">
                         {% endif %}
                         
                         <div class="input-group-append">
@@ -76,9 +86,9 @@
 
                 <!-- EMAIL -->
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
+                    <label for="InputEmail">Email address</label>
                     <div class="input-group mb-3">
-                        <input name="email" type="email" value="{{ user.email}}" onkeyup="ValidarEmail()" maxlength="60" class="form-control" id="exampleInputEmail1" placeholder="E-mail" value="">
+                        <input name="email" type="email" value="{{ user.email}}" onkeyup="ValidarEmail()" maxlength="60" class="form-control" id="InputEmail" placeholder="E-mail" value="">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-envelope"></span></div>
                         </div>
@@ -107,7 +117,6 @@
                 </div>
 
             </div>
-            <!-- /.card-body -->
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Editar</button>
@@ -120,6 +129,72 @@
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
     <script>
+        var estado = document.getElementById("InputEstado");
+        var cidade = document.getElementById("InputCidade");
+        var telefone = document.getElementById("InputTelefone");
+        var field = document.getElementById("InputEmail");
+        var pass1 = document.getElementById("password");
+        var pass2 = document.getElementById("confirmPassword");
+
+        window.onload = function() {
+            if (estado.value == ''){
+                estado.classList.add("is-invalid");
+                estado.classList.remove("is-valid");
+            }
+            if (cidade.value == ''){
+                cidade.classList.add("is-invalid");
+                cidade.classList.remove("is-valid");
+            }
+            if (telefone.value == ''){
+                telefone.classList.add("is-invalid");
+                telefone.classList.remove("is-valid");
+            }
+            if (field.value == ''){
+                field.classList.add("is-invalid");
+                field.classList.remove("is-valid");
+            }
+
+            // Popula os Estados
+            populateInputEstadoelect();
+        };
+        
+        //  ESTADOS E CIDADES
+        const selectInputEstado = document.querySelector('#InputEstado');
+        const selectInputCidade = document.querySelector('#InputCidade');
+
+        function populateInputEstadoelect(){
+            fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then(res => res.json())
+            .then(InputEstado => {
+                InputEstado.map(state => {
+                    const option = document.createElement('option');
+                    option.setAttribute('value', state.id);
+                    option.textContent = state.nome;
+                    selectInputEstado.appendChild(option);
+                })
+            })
+        };
+
+        selectInputEstado.addEventListener('change', () => {
+            let nodesSelectInputCidade = selectInputCidade.childNodes;
+            [...nodesSelectInputCidade].map(node => node.remove());
+            
+            estado.classList.add("is-valid");
+            estado.classList.remove("is-invalid");
+
+            let state = selectInputEstado.options[selectInputEstado.selectedIndex].value;
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${state}/municipios`)
+            .then(res => res.json())
+            .then(InputCidade => {
+                selectInputCidade.removeAttribute('disabled');
+                InputCidade.map(city => {
+                    const option = document.createElement('option');
+                    option.setAttribute('value', city.id);
+                    option.textContent = city.nome;
+                    selectInputCidade.appendChild(option);
+                })
+            })
+        });
 
         function mascara(o,f){
             v_obj=o
@@ -140,7 +215,6 @@
         }
 
         function ValidarTelefone(){
-            var telefone = document.getElementById("exampleInputTelefone");
             let TelefoneReg = new RegExp("^[(]{1}[0-9]{2}[)]{1} [0-9]{5}-[0-9]{4}$");
             var t1 = TelefoneReg.test(telefone.value);
             console.log(t1);
@@ -154,7 +228,6 @@
         }
 
         function ValidarEmail() {
-            var field = document.getElementById("exampleInputEmail1");
             usuario = field.value.substring(0, field.value.indexOf("@"));
             dominio = field.value.substring(field.value.indexOf("@")+ 1, field.value.length);
             
@@ -177,9 +250,6 @@
         }
 
         function ValidarPassword(){
-            var pass1 = document.getElementById("password");
-            var pass2 = document.getElementById("confirmPassword");
-
             if (pass1.value == pass2.value){
                 pass2.classList.add("is-valid");
                 pass2.classList.remove("is-invalid");
