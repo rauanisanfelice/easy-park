@@ -14,7 +14,10 @@
 {% endblock %}
 
 {% comment %} BLOCO HEAD {% endcomment %}
-{% block head %}{% endblock %}
+{% block head %}
+    <link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+{% endblock %}
 
 {% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
 {% block body %}
@@ -50,8 +53,8 @@
 
                 <!-- Estado -->
                 <div class="form-group">
-                    <label for="InputCidade">Estado</label>
-                    <select name="InputEstado" id="InputEstado" class="form-control">
+                    <label for="InputEstado">Estado</label>
+                    <select name="estado" id="InputEstado" class="form-control select2bs4-estado">
                         <option value="">Selecione um estado</option>
                     </select>
                 </div>
@@ -60,9 +63,9 @@
                 <div class="form-group">
                     <label for="InputCidade">Cidade</label>
                     {% if infousuario %}
-                        <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control" id="InputCidade" placeholder="Cidade">
+                        <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control select2bs4-cidade" id="InputCidade" placeholder="Cidade">
                     {% else %}
-                        <select name="InputCidade" id="InputCidade" class="form-control" disabled>
+                        <select name="cidade" id="InputCidade" class="form-control select2bs4-cidade" disabled>
                             <option value="">Por favor, selecione um estado</option>
                         </select>
                     {% endif %}
@@ -128,13 +131,30 @@
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
+    <script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
     <script>
+        const selectInputEstado = document.querySelector('#InputEstado');
+        const selectInputCidade = document.querySelector('#InputCidade');
         var estado = document.getElementById("InputEstado");
         var cidade = document.getElementById("InputCidade");
         var telefone = document.getElementById("InputTelefone");
         var field = document.getElementById("InputEmail");
         var pass1 = document.getElementById("password");
         var pass2 = document.getElementById("confirmPassword");
+
+        $(document).ready(function() {
+            // Popula os Estados
+            populateInputEstadoelect();
+
+            $('.select2bs4-estado').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+            $('.select2bs4-cidade').select2({
+                theme: 'bootstrap4',
+                width: '100%'
+            });
+        });
 
         window.onload = function() {
             if (estado.value == ''){
@@ -153,15 +173,9 @@
                 field.classList.add("is-invalid");
                 field.classList.remove("is-valid");
             }
-
-            // Popula os Estados
-            populateInputEstadoelect();
         };
         
         //  ESTADOS E CIDADES
-        const selectInputEstado = document.querySelector('#InputEstado');
-        const selectInputCidade = document.querySelector('#InputCidade');
-
         function populateInputEstadoelect(){
             fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
             .then(res => res.json())
@@ -175,7 +189,7 @@
             })
         };
 
-        selectInputEstado.addEventListener('change', () => {
+        $('#InputEstado').on('select2:select', () => {
             let nodesSelectInputCidade = selectInputCidade.childNodes;
             [...nodesSelectInputCidade].map(node => node.remove());
             
@@ -194,6 +208,11 @@
                     selectInputCidade.appendChild(option);
                 })
             })
+        });
+
+        $('#InputCidade').on('select2:select', () => {
+            cidade.classList.add("is-valid");
+            cidade.classList.remove("is-invalid");
         });
 
         function mascara(o,f){
