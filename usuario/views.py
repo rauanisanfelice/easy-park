@@ -115,14 +115,25 @@ class PagePerfil(View):
     
     def post(self, request):
         
-        nome = request.POST.get('nome')
-        telefone = request.POST.get('telefone')
-        email = request.POST.get('email')
+        nome = request.POST.get('nome', None)
+        telefone = request.POST.get('telefone', None)
+        email = request.POST.get('email', None)
         password = request.POST.get('password')
-        cidade = request.POST.get('cidade')
+        cidade = request.POST.get('cidade', None)
+        estado = request.POST.get('estado', None)
+
+        if nome == '' or telefone == '' or email == '' or cidade == '' or estado == '':
+            return render(request, self.retorno, {
+                "infousuario": None,
+                "error": "True",
+                "error_mensagem": "Campos vazios.",
+            })
         
         usuario = User.objects.get(id=request.user.id)
-        infousuario = InfoUsuario.objects.get(user=usuario)
+        try:
+            infousuario = InfoUsuario.objects.get(user=usuario)
+        except:
+            infousuario = None
         
         try:
             usuario.first_name = nome
@@ -145,7 +156,7 @@ class PagePerfil(View):
                 infousuario.save()
             else:
                 telefone = "+55"+telefone
-                infousuario = InfoUsuario(telefone=telefone, user=usuario, cidade=cidade)
+                infousuario = InfoUsuario(telefone=telefone, user=usuario, cidade=cidade, estado=estado)
                 infousuario.save()
 
             
@@ -157,7 +168,7 @@ class PagePerfil(View):
         except:
             logger.error(f'Erro - Ao atualizar dados do usuario_id: {request.user.id}')
             return render(request, self.retorno, {
-                "infousuario": infousuario,
+                "infousuario": None,
                 "error": "True",
                 "error_mensagem": "Erro ao atualizar, por gentileza tente mais tarde.",
             })
@@ -165,6 +176,7 @@ class PagePerfil(View):
 
 class PageInformacoes(View):
     retorno = 'info.html'
+
     def get(self, request):
         return render(request, self.retorno)
 
@@ -181,6 +193,7 @@ class PageNotificacoes(View):
 
 class PageHistorico(View):
     retorno = 'historico.html'
+
     def get(self, request):
         paradas = Parada.objects.filter(user=request.user.id).order_by('-data_parada')
         return render(request, self.retorno,{
