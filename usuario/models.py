@@ -8,12 +8,14 @@ class InfoUsuario(models.Model):
     estado =  models.CharField(max_length=100)
     cidade =  models.CharField(max_length=100)
     telefone = models.CharField(max_length=15)
+    telefone_ativo = models.BooleanField(default=False)
+    email_ativo = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
 class Funcionario(models.Model):
     db_table = 'funcionario'
-
+    
     setor = models.CharField(max_length=20)
     fiscal = models.CharField(max_length=20)
     ativo = models.BooleanField(default=True)
