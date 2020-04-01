@@ -20,7 +20,44 @@
 {% block body %}
 <div class="card card-solid card-outline">
     <div class="card-body box-profile">
-        Informações
+        <div class="row">
+            <p class="p-1 m-1 text-dark">Como estacionar?</p>
+        </div>
+        <div class="row">
+            <div class="col-2 text-center">
+                <a href="{% url 'perfil' %}">
+                    <i class="icon-tutorial fas fa-user-plus fa-5x"></i>
+                    <p class="text-secondary">Complete seu cadastro</p>
+                </a>
+            </div>
+            <div class="col-1 text-center">
+                <i class="icon-tutorial-arrow fas fa-arrow-right fa-3x"></i>
+            </div>
+            <div class="col-2 text-center">
+                <a href="{% url 'comprar' %}">
+                    <i class="icon-tutorial fas fa-money-check fa-5x"></i>
+                    <p class="text-secondary">Compre créditos</p>
+                </a>
+            </div>
+            <div class="col-1 text-center">
+                <i class="icon-tutorial-arrow fas fa-arrow-right fa-3x"></i>
+            </div>
+            <div class="col-2 text-center">
+                <a href="{% url 'veiculo' %}">
+                    <i class="icon-tutorial fas fa-car fa-5x"></i>
+                    <p class="text-secondary">Adicione seu veículo</p>
+                </a>
+            </div>
+            <div class="col-1 text-center">
+                <i class="icon-tutorial-arrow fas fa-arrow-right fa-3x"></i>
+            </div>
+            <div class="col-2 text-center">
+                <a href="{% url 'estacionar' %}">
+                    <i class="icon-tutorial fas fa-parking fa-5x"></i>
+                    <p class="text-secondary">Estacione</p>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
