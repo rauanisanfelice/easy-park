@@ -104,3 +104,12 @@
 :not(.layout-fixed) .main-sidebar {
     position: fixed;
 }
+
+.icon-tutorial{
+    color: #6c757d;
+}
+
+.icon-tutorial-arrow {
+    color: #17a2b8 !important;
+    margin-top: 0.2em;
+}
