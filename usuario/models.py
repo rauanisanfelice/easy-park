@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class InfoUsuario(models.Model):
     db_table = 'infoUsuario'
     
+    estado =  models.CharField(max_length=100)
     cidade =  models.CharField(max_length=100)
     telefone = models.CharField(max_length=15)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
