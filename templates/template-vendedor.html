@@ -46,8 +46,44 @@
                 <section class="content-header">
                     <div class="container-fluid"></div>
                 </section>
+
                 <section class="content">
-                    {% block body %}{% endblock %}
+                    {% comment %} MENU AJUDA {% endcomment %}
+                    <div class="card card-solid card-outline">
+                        <div class="card-body box-profile">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <a href="{% url 'info' %}">
+                                        <div class="small-box bg-info">
+                                            <div class="inner" style="height: 100px;">
+                                                <h4>Verificar veículo</h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fas fa-car"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-md-6 col-sm-12">
+                                    <a href="{% url 'comprar' %}" class="small-box-footer">
+                                        <div class="small-box bg-green">
+                                            <div class="inner" style="height: 100px;">
+                                                <h5>Comprar créditos</h5>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-money-check"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- BODY -->
+                            {% block body %}{% endblock %}
+
+                        </div>
+                    </div>                
                 </section>
             </div>
 
