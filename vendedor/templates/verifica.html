@@ -10,39 +10,38 @@
 
 {% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
 {% block body %}
-<div class="card card-solid card-outline">
-    <div class="card-body box-profile">
-        
-        {% comment %} MENSAGENS DE RETORNO {% endcomment %}
-        {% if error %}
-            <div class="alert alert-danger" role="alert">
+    {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
+            <p class="font-weight-bold">
                 {{ error_mensagem }}
-            </div>
-        {% endif %}
-        {% if sucesso %}
-            <div class="alert alert-success" role="alert">
-                {{ sucesso_mensagem }}
-            </div>
-        {% endif %}
+                {% if acao %}<br>{{acao}}{% endif%}
+            </p>
+        </div>
+    {% endif %}
+    {% if sucesso %}
+        <div class="alert alert-success" role="alert">
+            {{ sucesso_mensagem }}
+        </div>
+    {% endif %}
 
-        {% comment %} FORMULARIO {% endcomment %}
-        <form role="form" action="." method="POST">{% csrf_token %}
-            <div class="card-body">
-                <!-- PLACA -->
-                <div class="form-group">
-                    <label for="exampleInputPlaca">Placa</label>
-                    <div class="input-group mb-3">
-                        <input type="text" name="placa" id="exampleInputPlaca" onkeyup="ValidarPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control">
-                        <div class="input-group-append">
-                            <div class="input-group-text"><span class="fas fa-car"></span></div>
-                        </div>
+    {% comment %} FORMULARIO {% endcomment %}
+    <form role="form" action="." method="POST">{% csrf_token %}
+        <div class="card-body">
+            <!-- PLACA -->
+            <div class="form-group">
+                <label for="exampleInputPlaca">Placa</label>
+                <div class="input-group mb-3">
+                    <input type="text" name="placa" id="exampleInputPlaca" onkeyup="ValidarPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control">
+                    <div class="input-group-append">
+                        <div class="input-group-text"><span class="fas fa-car"></span></div>
                     </div>
                 </div>
-                <button type="submit" id="Verificar" class="btn btn-primary">Verificar</button>
             </div>
-        </form>
-    </div>
-</div>
+            <button type="submit" id="Verificar" class="btn btn-primary">Verificar</button>
+        </div>
+    </form>
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
