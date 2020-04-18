@@ -44,7 +44,7 @@ class Veiculo(models.Model):
     apelido = models.CharField(max_length=100)
     
     ativo = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
 
 class ValoresCompra(models.Model):
@@ -74,7 +74,7 @@ class Parada(models.Model):
     db_table = 'parada'
     
     veiculo = models.ForeignKey(Veiculo, on_delete=models.PROTECT)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     quantidade_horas = models.ForeignKey(HorasEstacionar, on_delete=models.PROTECT)
 
