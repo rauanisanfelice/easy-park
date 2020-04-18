@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label for="exampleInputPlaca">Placa</label>
                     <div class="input-group mb-3">
-                        <input type="text" name="placa" id="exampleInputPlaca" onkeyup="ValidPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control">
+                        <input type="text" name="placa" id="exampleInputPlaca" onkeyup="ValidarPlaca()" placeholder="AAA-0000 ou  AAA0A00" class="form-control">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-car"></span></div>
                         </div>
@@ -95,7 +95,7 @@
 {% block script %}    
     <script>
         
-        function ValidPlaca(){
+        function ValidarPlaca(){
             var placa = document.getElementById("exampleInputPlaca");
             document.getElementById("exampleInputPlaca").value = placa.value.toUpperCase();
             if (placa.value.length > 6){
