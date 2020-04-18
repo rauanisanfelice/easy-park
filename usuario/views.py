@@ -41,10 +41,15 @@ def get_saldo_atual(request):
 
 
 @login_required
-def check_veiculo_horario(request, veiculo):
-    paradas_veiculos = Parada.objects.filter(user=request.user.id, veiculo__id=veiculo.id).order_by('-id')[:1]
+def check_veiculo_horario(request, usuario, veiculo):
+    if usuario:
+        paradas_veiculos = Parada.objects.filter(user=usuario.id, veiculo__id=veiculo.id).order_by('-id')[:1]
+    else:
+        # FUNCIONARIO REALIZANDO A BUSCA
+        paradas_veiculos = Parada.objects.filter(veiculo__id=veiculo.id).order_by('-id')[:1]
+
     if paradas_veiculos.count() == 0:
-        return True
+        return True # FORA DO PERIDO
     else:
         data_parada = list(paradas_veiculos.values('data_parada'))[0]['data_parada']
         id_horas = list(paradas_veiculos.values('quantidade_horas'))[0]['quantidade_horas']
@@ -59,11 +64,9 @@ def check_veiculo_horario(request, veiculo):
         data_validar = data_validar.astimezone(pytz.timezone('America/Sao_Paulo'))
 
         if hoje > data_parada and hoje < data_validar:
-            # DENTRO DO PERIDO
-            return False
+            return False # DENTRO DO PERIDO
         else:
-            # FORA DO PERIDO
-            return True
+            return True # FORA DO PERIDO
 
 
 def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
@@ -245,7 +248,7 @@ class PageEstacionar(View):
             # VERIFICA SE POSSUI SALDO
             if float(saldo_atual) >= hora_selecionada.valor.real:
                 # VERIFICA SE JA POSSUI UMA PARADA
-                if check_veiculo_horario(request, veiculo):
+                if check_veiculo_horario(request, request.user, veiculo):
                     try:
                         # REALIZA PARADA
                         parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
@@ -344,8 +347,8 @@ class PageVeiculo(View):
         var_delete = QueryDict(request.body)
         id_veiculo = var_delete.get('id_veiculo')
 
-        delVeiculos = Veiculo.objects.get(id=id_veiculo)        
-        if check_veiculo_horario(request, delVeiculos):
+        delVeiculos = Veiculo.objects.get(id=id_veiculo)
+        if check_veiculo_horario(request, request.user, delVeiculos):
             delVeiculos.ativo = False
             delVeiculos.save()
             retorno = { "retorno" : True }
