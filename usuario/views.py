@@ -6,11 +6,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
+
 from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .models import Veiculo, InfoUsuario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
+from .models import Veiculo, InfoUsuario, Funcionario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
 from .forms import *
 
 import logging
@@ -85,17 +88,27 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
         t.start()
 
 
-class Home(View):
-    retorno = 'home.html'
-
-    def get(self, request):
-        return render(request, self.retorno)
-
-
+########################################################################
 class SignUp(generic.CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('home')
     template_name = 'signup.html'
+
+
+########################################################################
+class Home(View):
+    retorno = 'home.html'
+
+    def get(self, request):
+        try:
+            funcionario = Funcionario.objects.get(user=request.user)
+        except:
+            funcionario = None
+
+        if funcionario:
+            return redirect('/vendedor/')
+        else:
+            return render(request, self.retorno)
 
 
 class PagePerfil(View):
