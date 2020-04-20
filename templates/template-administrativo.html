@@ -1,0 +1,129 @@
+{% load static %}
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="{% static 'plugins/AdminLTE-3.0.2/dist/css/adminlte.min.css' %}">
+        <!-- Google Font: Source Sans Pro -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+        {% comment %} MY STYLE {% endcomment %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style-vendedor.css' %}">
+
+        {% block head %}{% endblock %}
+    </head>
+
+    <body class="hold-transition layout-top-nav">
+        <div class="wrapper">
+            <!-- NAV BAR TOP -->
+            <nav class="main-header navbar navbar-expand-md navbar-dark navbar-info">
+                <!-- Left navbar links -->
+                <ul class="navbar-nav">
+                    <span class="brand-text font-weight-light">Easy Park</span>
+                </ul>
+                
+                <!-- Right navbar links -->
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" title="Sair" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.navbar -->
+
+            <!-- BODY -->
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <div class="container-fluid"></div>
+                </section>
+
+                <section class="content">
+                    {% comment %} MENU AJUDA {% endcomment %}
+                    <div class="card card-solid card-outline">
+                        <div class="card-body box-profile">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <a href="{% url 'dashboard' %}">
+                                        <div class="small-box bg-info">
+                                            <div class="inner" style="height: 100px;">
+                                                <h4>Dashboards</h4>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fas fa-chart-line"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <div class="col-md-6 col-sm-12">
+                                    <a href="{% url 'admin:index' %}" class="small-box-footer">
+                                        <div class="small-box bg-green">
+                                            <div class="inner" style="height: 100px;">
+                                                <h5>Configurações</h5>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-cogs"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- BODY -->
+                            {% block body %}{% endblock %}
+
+                        </div>
+                    </div>                   
+                </section>
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="main-footer">
+                <div class="float-right d-none d-sm-block">
+                    <b>Version</b> 1.0.0
+                </div>
+                <strong>Copyright &copy; 2020-2050 <a href="{% url 'home' %}">Easy Park</a>.</strong>
+                reserved.
+            </footer>
+        <div>
+        
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark sidebar-dark-info">
+            <!-- Control sidebar content goes here -->
+        </aside>
+
+        {% comment %} SCRIPTS {% endcomment %}
+        <script src="{% static 'plugins/jQuery-3.4.1/jquery-3.4.1.min.js' %}"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous">
+        </script>
+        <script src="{% static 'plugins/AdminLTE-3.0.2/dist/js/adminlte.min.js' %}"></script>
+        
+        <!-- AM CHARTS 4 -->
+        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/core.js' %}"></script>
+        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/charts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/dataviz.js' %}"></script>
+        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/animated.js' %}"></script>
+        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/lang/pt_BR.js' %}"></script>
+
+        {% block script %}{% endblock %}
+    </body>
+
+</html>
