@@ -110,6 +110,8 @@ class Home(View):
 
         if funcionario:
             return redirect('/vendedor/')
+        elif request.user.is_staff:
+            return redirect('/administrativo/')
         else:
             return render(request, self.retorno)
 
