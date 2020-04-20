@@ -12,19 +12,219 @@
 {% block body %}
     {% comment %} MENSAGENS DE RETORNO {% endcomment %}
     {% if error %}
-        <div class="alert alert-danger" role="alert">
-            <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
-            <p class="font-weight-bold">
-                {{ error_mensagem }}
-                {% if acao %}<br>{{acao}}{% endif%}
-            </p>
-        </div>
+    <div class="alert alert-danger" role="alert">
+        <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
+        <p class="font-weight-bold">
+            {{ error_mensagem }}
+        </p>
+    </div>
     {% endif %}
-    {% if sucesso %}
-        <div class="alert alert-success" role="alert">
-            {{ sucesso_mensagem }}
+
+    <!-- FILTROS -->
+    <div class="row">
+        <h5 class="font-weight-bold">Filtros</h5>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-6">
+            <select class="browser-default custom-select" id="ano" name="ano">
+                <option selected value="">Ano</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+            </select>
         </div>
-    {% endif %}
+        <div class="col-12 col-sm-12 col-md-6">
+            <select class="browser-default custom-select" id="mes" name="mes">
+                <option selected value="">Mês</option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+    </div><br>
+
+    <!-- MÉTRICAS -->
+    <div class="row">
+        <!-- MÉTRICAS GERAIS -->
+        <div class="col-12 col-sm-12 col-md-12">
+            <span>Métricas gerais</span>
+        </div>
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total em carteira</span>
+                    <span class="info-box-number">
+                        R$ 1.000,00
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total gasto</span>
+                    <span class="info-box-number">
+                        R$ 1.000,00
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Horas utilizadas</span>
+                    <span class="info-box-number">
+                        10<small>h</small>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MÉTRICAS DE PARADAS -->
+        <div class="col-12 col-sm-12 col-md-12">
+            <span>Métricas de paradas</span>
+        </div>
+
+        <!--  -->
+        <div class="w-100"></div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de paradas</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="w-100"></div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de notificações</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Taxa de notificações</span>
+                    <span class="info-box-number">
+                        10<small>%</small>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de infrações</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Taxa de infrações</span>
+                    <span class="info-box-number">
+                        10<small>%</small>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+         <!-- MÉTRICAS DE DESEMPENHO -->
+         <div class="col-12 col-sm-12 col-md-12">
+            <span>Métricas de desempenho</span>
+        </div>
+
+        <!--  -->
+        <div class="w-100"></div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de horas válidas</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de horas válidas usadas</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!--  -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Delta</span>
+                    <span class="info-box-number">
+                        10
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         #chartdiv {
             width: 100%;
@@ -32,60 +232,66 @@
         }
     </style>
 
-    <div id="chartdiv"></div>   
+    <!--
+        Gráficos:
+        * Gráfico de totais de paradas/infrações por setor;
+        * Gráfico histórico de paradas/infrações;
+        * Gráfico de total de vendas por funcionário;
+    -->
+    <div id="chartdiv"></div>
 
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
-{% block script %}    
-    <script>
-        am4core.ready(function() {
+{% block script %}
+<script>
+    am4core.ready(function () {
 
-            // Themes begin
-            am4core.useTheme(am4themes_animated);
-            // Themes end
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
 
-            // Create chart instance
-            var chart = am4core.create("chartdiv", am4charts.XYChart);
+        // Create chart instance
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
 
-            // Add data
-            chart.data = [
-            {date:new Date(2019,5,12), value1:50, value2:48, previousDate:new Date(2019, 5, 5)},
-            {date:new Date(2019,5,13), value1:53, value2:51, previousDate:new Date(2019, 5, 6)},
-            {date:new Date(2019,5,14), value1:56, value2:58, previousDate:new Date(2019, 5, 7)},
-            {date:new Date(2019,5,15), value1:52, value2:53, previousDate:new Date(2019, 5, 8)},
-            {date:new Date(2019,5,16), value1:48, value2:44, previousDate:new Date(2019, 5, 9)},
-            {date:new Date(2019,5,17), value1:47, value2:42, previousDate:new Date(2019, 5, 10)},
-            {date:new Date(2019,5,18), value1:59, value2:55, previousDate:new Date(2019, 5, 11)}
-            ]
+        // Add data
+        chart.data = [
+            { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
+            { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
+            { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
+            { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
+            { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
+            { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
+            { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
+        ]
 
-            // Create axes
-            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-            dateAxis.renderer.minGridDistance = 50;
+        // Create axes
+        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+        dateAxis.renderer.minGridDistance = 50;
 
-            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-            // Create series
-            var series = chart.series.push(new am4charts.LineSeries());
-            series.dataFields.valueY = "value1";
-            series.dataFields.dateX = "date";
-            series.strokeWidth = 2;
-            series.minBulletDistance = 10;
-            series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
-            series.tooltip.pointerOrientation = "vertical";
+        // Create series
+        var series = chart.series.push(new am4charts.LineSeries());
+        series.dataFields.valueY = "value1";
+        series.dataFields.dateX = "date";
+        series.strokeWidth = 2;
+        series.minBulletDistance = 10;
+        series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
+        series.tooltip.pointerOrientation = "vertical";
 
-            // Create series
-            var series2 = chart.series.push(new am4charts.LineSeries());
-            series2.dataFields.valueY = "value2";
-            series2.dataFields.dateX = "date";
-            series2.strokeWidth = 2;
-            series2.strokeDasharray = "3,4";
-            series2.stroke = series.stroke;
+        // Create series
+        var series2 = chart.series.push(new am4charts.LineSeries());
+        series2.dataFields.valueY = "value2";
+        series2.dataFields.dateX = "date";
+        series2.strokeWidth = 2;
+        series2.strokeDasharray = "3,4";
+        series2.stroke = series.stroke;
 
-            // Add cursor
-            chart.cursor = new am4charts.XYCursor();
-            chart.cursor.xAxis = dateAxis;
+        // Add cursor
+        chart.cursor = new am4charts.XYCursor();
+        chart.cursor.xAxis = dateAxis;
 
-        }); // end am4core.ready()
-    </script>
+    }); // end am4core.ready()
+</script>
 {% endblock %}
