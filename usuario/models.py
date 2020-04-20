@@ -21,6 +21,9 @@ class Funcionario(models.Model):
     ativo = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
+    class Meta:
+        verbose_name_plural = "Funcionários"
+
 
 class Carteira(models.Model):
     db_table = 'carteira'
@@ -55,10 +58,12 @@ class ValoresCompra(models.Model):
     ativo = models.BooleanField(default=True)
     ordem = models.IntegerField()
 
+    class Meta:
+        verbose_name_plural = "Valores compras"
 
 class HorasEstacionar(models.Model):
     db_table = 'horasestacionar'
-
+    
     descricao_horas = models.CharField(max_length=100)
     horas = models.IntegerField()
     minutos = models.IntegerField()
@@ -69,6 +74,8 @@ class HorasEstacionar(models.Model):
     ativo = models.BooleanField(default=True)
     ordem = models.IntegerField()
 
+    class Meta:
+        verbose_name_plural = "Horas estacionar"
 
 class Parada(models.Model):
     db_table = 'parada'
@@ -89,6 +96,9 @@ class TipoNotificacao(models.Model):
     descricao_titulo = models.CharField(max_length=100)
     descricao_full = models.CharField(max_length=150)
     ativo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Tipo notificações"
 
 
 class Notificacao(models.Model):
