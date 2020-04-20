@@ -53,47 +53,47 @@
 
     <!-- MÉTRICAS -->
     <div class="row">
-        <!-- MÉTRICAS GERAIS -->
+        <!-- MÉTRICAS DE CRÉDITOS -->
         <div class="col-12 col-sm-12 col-md-12">
-            <span>Métricas gerais</span>
+            <span>Métricas creditos</span>
         </div>
-        <!--  -->
+        <!-- CRÉDITOS COMPRADOS  -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Total em carteira</span>
+                    <span class="info-box-text">Comprados</span>
                     <span class="info-box-number">
-                        R$ 1.000,00
+                        {% if sum_valor_entradas %}R$ {{ sum_valor_entradas }}{% else %}#error{% endif %}
                     </span>
                 </div>
             </div>
         </div>
         
-        <!--  -->
+        <!-- CŔEDITOS EM CARTEIRA -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Total gasto</span>
+                    <span class="info-box-text">Em carteira</span>
                     <span class="info-box-number">
-                        R$ 1.000,00
+                        {% if sum_valor_carteira %}R$ {{ sum_valor_carteira }}{% else %}#error{% endif %}
                     </span>
                 </div>
             </div>
         </div>
         
-        <!--  -->
+        <!-- CRÉDITOS UTILIZADOS -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
                 <div class="info-box-content">
-                    <span class="info-box-text">Horas utilizadas</span>
+                    <span class="info-box-text">Utilizados</span>
                     <span class="info-box-number">
-                        10<small>h</small>
+                        {% if sum_valor_saidas %}R$ {{ sum_valor_saidas }}{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
@@ -104,7 +104,7 @@
             <span>Métricas de paradas</span>
         </div>
 
-        <!--  -->
+        <!-- TOTAL PARADAS -->
         <div class="w-100"></div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
@@ -113,13 +113,27 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de paradas</span>
                     <span class="info-box-number">
-                        10
+                        {% if sum_total_paradas %}{{ sum_total_paradas }}{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
         </div>
 
-        <!--  -->
+        <!-- PARADA ATIVAS -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de paradas ativas</span>
+                    <span class="info-box-number">
+                        {% if sum_total_paradas_ativas %}{{ sum_total_paradas_ativas }}{% else %}#error{% endif%}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTAL DE NOTIFICAÇÕES -->
         <div class="w-100"></div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
@@ -128,13 +142,13 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de notificações</span>
                     <span class="info-box-number">
-                        10
+                        {% if sum_total_notificacoes %}{{ sum_total_notificacoes }}{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
         </div>
         
-        <!--  -->
+        <!-- TAXA DE NOTIFICAÇÕES -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
@@ -142,7 +156,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de notificações</span>
                     <span class="info-box-number">
-                        10<small>%</small>
+                        {% if taxa_notificacoes %}{{ taxa_notificacoes }}<small>%</small>{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
@@ -156,7 +170,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de infrações</span>
                     <span class="info-box-number">
-                        10
+                        {% if sum_total_infracoes %}{{ sum_total_infracoes }}{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
@@ -170,7 +184,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de infrações</span>
                     <span class="info-box-number">
-                        10<small>%</small>
+                        {% if taxa_infracoes %}{{ taxa_infracoes }}<small>%</small>{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
