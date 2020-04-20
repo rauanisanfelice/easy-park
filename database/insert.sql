@@ -18,6 +18,6 @@ VALUES
 
 INSERT INTO usuario_tiponotificacao ( tipo,descricao_titulo,descricao_full,ativo )
 VALUES
-  ('MONIT','Seu tempo está se esgotando.','Seu tempo esta esgotando, renove seu horário ou caso for necessário compre mais créditos.',true),
+  ('NOTIC','Seu tempo está se esgotando.','Seu tempo esta esgotando, renove seu horário ou caso for necessário compre mais créditos.',true),
   ('ESGOT','Seu tempo se esgotou!','Seu tempo esgotou, renove seu horário ou caso for necessário compre mais créditos.',true),
   ('ALERT','Retire seu carro','Seu carro foi notificado, retire seu carro em 5 min, caso contrário será multado conforme lei ####.',true);
