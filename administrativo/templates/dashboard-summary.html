@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 
 {% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
-{% block title %}Dashboards{% endblock %}
+{% block title %}Dashboards - Resumo{% endblock %}
 
 {% comment %} BLOCO HEAD {% endcomment %}
 {% block head %}{% endblock %}
@@ -255,77 +255,114 @@
             <span>Gráficos de totais</span>
         </div>
         <!-- CRÉDITOS COMPRADOS  -->
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-12 col-md-6">
+            <div id="chartdiv" class="admin-grafico"></div>
         </div>
     </div>
 
-    <style>
-        #chartdiv {
-            width: 100%;
-            height: 500px;
-        }
-    </style>
-
     <!--
+        Metricas:
+        * Notificações lidas;
+        * Buscas por funcionários média;
+        * Top 5 funcionarios que mais realizaram buscas;
+        * Top 5 funcionarios que mais realizaram notificações;
+        * Top 5 funcionarios que mais realizaram buscas e notificações;
         Gráficos:
-        * Gráfico de totais de paradas/infrações por setor;
+        * Gráfico de totais de paradas/infrações;
         * Gráfico histórico de paradas/infrações;
         * Gráfico de total de vendas por região;
-        * Top funcionários (vendas / buscas);
     -->
-    <div id="chartdiv"></div>
+    
 
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
 <script>
-    am4core.ready(function () {
+    am4core.ready(function() {
 
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-        // Themes end
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
 
-        // Create chart instance
-        var chart = am4core.create("chartdiv", am4charts.XYChart);
+    // Create chart instance
+    var chart = am4core.create("chartdiv", am4charts.PieChart);
 
-        // Add data
-        chart.data = [
-            { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
-            { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
-            { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
-            { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
-            { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
-            { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
-            { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
-        ]
+    // Set data
+    var selected;
+    var types = [{
+    type: "Fossil Energy",
+    percent: 70,
+    color: chart.colors.getIndex(0),
+    subs: [{
+        type: "Oil",
+        percent: 15
+    }, {
+        type: "Coal",
+        percent: 35
+    }, {
+        type: "Nuclear",
+        percent: 20
+    }]
+    }, {
+    type: "Green Energy",
+    percent: 30,
+    color: chart.colors.getIndex(1),
+    subs: [{
+        type: "Hydro",
+        percent: 15
+    }, {
+        type: "Wind",
+        percent: 10
+    }, {
+        type: "Other",
+        percent: 5
+    }]
+    }];
 
-        // Create axes
-        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-        dateAxis.renderer.minGridDistance = 50;
+    // Add data
+    chart.data = generateChartData();
 
-        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    // Add and configure Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "percent";
+    pieSeries.dataFields.category = "type";
+    pieSeries.slices.template.propertyFields.fill = "color";
+    pieSeries.slices.template.propertyFields.isActive = "pulled";
+    pieSeries.slices.template.strokeWidth = 0;
 
-        // Create series
-        var series = chart.series.push(new am4charts.LineSeries());
-        series.dataFields.valueY = "value1";
-        series.dataFields.dateX = "date";
-        series.strokeWidth = 2;
-        series.minBulletDistance = 10;
-        series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
-        series.tooltip.pointerOrientation = "vertical";
+    function generateChartData() {
+    var chartData = [];
+    for (var i = 0; i < types.length; i++) {
+        if (i == selected) {
+        for (var x = 0; x < types[i].subs.length; x++) {
+            chartData.push({
+            type: types[i].subs[x].type,
+            percent: types[i].subs[x].percent,
+            color: types[i].color,
+            pulled: true
+            });
+        }
+        } else {
+        chartData.push({
+            type: types[i].type,
+            percent: types[i].percent,
+            color: types[i].color,
+            id: i
+        });
+        }
+    }
+    return chartData;
+    }
 
-        // Create series
-        var series2 = chart.series.push(new am4charts.LineSeries());
-        series2.dataFields.valueY = "value2";
-        series2.dataFields.dateX = "date";
-        series2.strokeWidth = 2;
-        series2.strokeDasharray = "3,4";
-        series2.stroke = series.stroke;
-
-        // Add cursor
-        chart.cursor = new am4charts.XYCursor();
-        chart.cursor.xAxis = dateAxis;
+    pieSeries.slices.template.events.on("hit", function(event) {
+    if (event.target.dataItem.dataContext.id != undefined) {
+        selected = event.target.dataItem.dataContext.id;
+    } else {
+        selected = undefined;
+    }
+    chart.data = generateChartData();
+    });
 
     }); // end am4core.ready()
 </script>
