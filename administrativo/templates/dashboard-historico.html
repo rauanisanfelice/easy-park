@@ -1,0 +1,166 @@
+{% extends 'template-administrativo.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Dashboards - Histórico{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+    {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
+        <p class="font-weight-bold">
+            {{ error_mensagem }}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- FILTROS -->
+    <div class="row">
+        <h5 class="font-weight-bold">Filtros</h5>
+    </div>
+    <form action="." method="get">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="ano" name="ano">
+                    <option selected value="">Ano anterior</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="mes" name="mes">
+                    <option selected value="">Mês anterior</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="ano" name="ano">
+                    <option selected value="">Ano atual</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="mes" name="mes">
+                    <option selected value="">Mês atual</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <button type="submit" class="btn btn-info btn-block" name="filtrar" title="Filtrar" value="Filtrar">Filtrar</button>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <button type="submit" class="btn btn-warning btn-block" name="limpar" title="Limpar filtros" value="Limpar">Limpar</button>
+            </div>
+        </div>
+    </form><br>
+
+    <!-- GRAFICOS -->
+    <div class="row">
+        <!-- GRÁFICOS DE  -->
+        <div class="col-12 col-sm-12 col-md-12">
+            <span>Gráficos de totais</span>
+        </div>
+        <!-- CRÉDITOS COMPRADOS  -->
+        <div class="col-12 col-sm-6 col-md-12">
+            <div id="charthistorico" class="admin-grafico"></div>
+        </div>
+    </div>
+
+    <!--
+        Metricas:
+        * Notificações lidas;
+        * Buscas por funcionários média;
+        * Top 5 funcionarios que mais realizaram buscas;
+        * Top 5 funcionarios que mais realizaram notificações;
+        * Top 5 funcionarios que mais realizaram buscas e notificações;
+        Gráficos:
+        * Gráfico de totais de paradas/infrações;
+        * Gráfico histórico de paradas/infrações;
+        * Gráfico de total de vendas por região;
+    -->
+    
+
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+<script>
+    am4core.ready(function () {
+
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        // Create chart instance
+        var chart = am4core.create("charthistorico", am4charts.XYChart);
+
+        // Add data
+        chart.data = [
+            { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
+            { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
+            { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
+            { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
+            { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
+            { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
+            { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
+        ]
+
+        // Create axes
+        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+        dateAxis.renderer.minGridDistance = 50;
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+        // Create series
+        var series = chart.series.push(new am4charts.LineSeries());
+        series.dataFields.valueY = "value1";
+        series.dataFields.dateX = "date";
+        series.strokeWidth = 2;
+        series.minBulletDistance = 10;
+        series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
+        series.tooltip.pointerOrientation = "vertical";
+
+        // Create series
+        var series2 = chart.series.push(new am4charts.LineSeries());
+        series2.dataFields.valueY = "value2";
+        series2.dataFields.dateX = "date";
+        series2.strokeWidth = 2;
+        series2.strokeDasharray = "3,4";
+        series2.stroke = series.stroke;
+
+        // Add cursor
+        chart.cursor = new am4charts.XYCursor();
+        chart.cursor.xAxis = dateAxis;
+
+    }); // end am4core.ready()
+</script>
+{% endblock %}
