@@ -60,7 +60,7 @@
         <!-- CRÉDITOS COMPRADOS  -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-credit-card"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Comprados</span>
@@ -74,7 +74,7 @@
         <!-- CŔEDITOS EM CARTEIRA -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-wallet"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Em carteira</span>
@@ -88,7 +88,7 @@
         <!-- CRÉDITOS UTILIZADOS -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-check"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Utilizados</span>
@@ -108,7 +108,7 @@
         <div class="w-100"></div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-car"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de paradas</span>
@@ -122,7 +122,7 @@
         <!-- PARADA ATIVAS -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-car-side"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de paradas ativas</span>
@@ -137,7 +137,7 @@
         <div class="w-100"></div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray elevation-1"><i class="fas fa-exclamation"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de notificações</span>
@@ -151,7 +151,7 @@
         <!-- TAXA DE NOTIFICAÇÕES -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray elevation-1"><i class="fas fa-exclamation"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de notificações</span>
@@ -162,10 +162,10 @@
             </div>
         </div>
 
-        <!--  -->
+        <!-- TOTAL DE INFRAÇOES -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de infrações</span>
@@ -176,10 +176,10 @@
             </div>
         </div>
 
-        <!--  -->
+        <!-- TAXA DE INFRAÇÕES -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de infrações</span>
@@ -190,21 +190,21 @@
             </div>
         </div>
 
-         <!-- MÉTRICAS DE DESEMPENHO -->
+         <!-- MÉTRICAS DE DESEMPENHO/mês -->
          <div class="col-12 col-sm-12 col-md-12">
-            <span>Métricas de desempenho</span>
+            <span>Métricas de desempenho/mês</span>
         </div>
 
         <!--  -->
         <div class="w-100"></div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray-dark elevation-1"><i class="fas fa-thumbs-up"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de horas válidas</span>
                     <span class="info-box-number">
-                        10
+                        {% if horas_validas %}{{ horas_validas }}<small>h</small>{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
@@ -213,12 +213,12 @@
         <!--  -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray-dark elevation-1"><i class="fas fa-chart-bar"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Total de horas válidas usadas</span>
                     <span class="info-box-number">
-                        10
+                        {% if total_horas_paradas %}{{ total_horas_paradas }}<small>h</small>{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
@@ -227,15 +227,27 @@
         <!--  -->
         <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-gradient-gray-dark elevation-1"><i class="fas fa-asterisk"></i></span>
 
                 <div class="info-box-content">
                     <span class="info-box-text">Delta</span>
                     <span class="info-box-number">
-                        10
+                        {% if delta_horas_paradas %}{{ delta_horas_paradas }}<small>h</small>{% else %}#error{% endif%}
                     </span>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <!-- GRAFICOS -->
+    <div class="row">
+        <!-- GRÁFICOS DE  -->
+        <div class="col-12 col-sm-12 col-md-12">
+            <span>Gráficos de totais</span>
+        </div>
+        <!-- CRÉDITOS COMPRADOS  -->
+        <div class="col-12 col-sm-6 col-md-3">
         </div>
     </div>
 
@@ -250,7 +262,8 @@
         Gráficos:
         * Gráfico de totais de paradas/infrações por setor;
         * Gráfico histórico de paradas/infrações;
-        * Gráfico de total de vendas por funcionário;
+        * Gráfico de total de vendas por região;
+        * Top funcionários (vendas / buscas);
     -->
     <div id="chartdiv"></div>
 

@@ -5,6 +5,12 @@ from django.db.models import Sum, Count
 
 from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao
 
+import calendar
+import datetime
+
+HORAS_VALIDAS_DIA = 8
+DIAS_UTEIS_SEMANA = 6
+
 class Dashboard(View):
     retorno = 'dashboard-summary.html'
     
@@ -25,8 +31,20 @@ class Dashboard(View):
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao).aggregate(Count('tipo_notificacao'))
         sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao).aggregate(Count('tipo_notificacao'))
 
-        # taxa_notificacoes = (sum_total_paradas['valido__count'] * 1) / sum_total_notificacoes['tipo_notificacao__count']
-        # taxa_infracoes = (sum_total_paradas['valido__count'] * 1) / sum_total_infracoes['tipo_notificacao__count']
+        taxa_notificacoes = float(((sum_total_notificacoes['tipo_notificacao__count'] * 1) / sum_total_paradas['valido__count']) * 100)
+        taxa_infracoes = float(((sum_total_infracoes['tipo_notificacao__count'] * 1) / sum_total_paradas['valido__count']) * 100)
+
+        # DESEMPENHO
+        ano_atual = datetime.datetime.now().year
+        mes_atual = datetime.datetime.now().month
+        dias_mes = calendar.monthrange(ano_atual, mes_atual)
+
+        dias_validos = dias_mes[1] - (DIAS_UTEIS_SEMANA % dias_mes[1])
+        horas_validas = dias_validos * HORAS_VALIDAS_DIA
+
+        sum_total_horas_paradas = Parada.objects.all().aggregate(Sum('quantidade_horas__horas'), Sum('quantidade_horas__minutos'))
+        total_horas_paradas = sum_total_horas_paradas['quantidade_horas__horas__sum'] + (sum_total_horas_paradas['quantidade_horas__minutos__sum'] / 60)
+        delta_horas_paradas = total_horas_paradas - horas_validas
 
         return render(request, self.retorno, {
             "sum_valor_entradas": sum_valor_entradas['valor__sum'],
@@ -36,8 +54,11 @@ class Dashboard(View):
             "sum_total_paradas_ativas": sum_total_paradas_ativas['valido__count'],
             "sum_total_notificacoes": sum_total_notificacoes['tipo_notificacao__count'],
             "sum_total_infracoes": sum_total_infracoes['tipo_notificacao__count'],
-            # "taxa_notificacoes": taxa_notificacoes,
-            # "taxa_infracoes": taxa_infracoes,
+            "taxa_notificacoes": format(taxa_notificacoes, '.2f'),
+            "taxa_infracoes": format(taxa_infracoes, '.2f'),
+            "horas_validas": horas_validas,
+            "total_horas_paradas": total_horas_paradas,
+            "delta_horas_paradas": delta_horas_paradas,
         })
     
     def post(self, request):
