@@ -3,7 +3,7 @@ from django.views.generic import View
 
 from django.db.models import Sum, Count
 
-from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao, Funcionario
+from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao, Funcionario, Veiculo
 from vendedor.models import PesquisaVeiculo, VendaFuncionario
 import calendar
 import datetime
@@ -42,6 +42,7 @@ class Dashboard(View):
         sum_valor_saidas = Parada.objects.all()
         sum_total_paradas = Parada.objects.all()
         sum_total_paradas_ativas = Parada.objects.filter(valido=True)
+        total_veiculos_cadastrados = Veiculo.objects.filter(ativo=True)
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao)
         sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao)
         sum_total_horas_paradas = Parada.objects.all()
@@ -97,6 +98,7 @@ class Dashboard(View):
         sum_valor_saidas = sum_valor_saidas.aggregate(Sum('quantidade_horas__valor'))['quantidade_horas__valor__sum']
         sum_total_paradas = sum_total_paradas.aggregate(Count('valido'))['valido__count']
         sum_total_paradas_ativas  = sum_total_paradas_ativas.aggregate(Count('valido'))['valido__count']
+        total_veiculos_cadastrados = total_veiculos_cadastrados.distinct('placa').count()
         sum_total_notificacoes = sum_total_notificacoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_infracoes = sum_total_infracoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_horas_paradas = sum_total_horas_paradas.aggregate(Sum('quantidade_horas__horas'), Sum('quantidade_horas__minutos'))
@@ -137,6 +139,7 @@ class Dashboard(View):
             "sum_valor_saidas": sum_valor_saidas,
             "sum_total_paradas": sum_total_paradas,
             "sum_total_paradas_ativas": sum_total_paradas_ativas,
+            "total_veiculos_cadastrados": total_veiculos_cadastrados,
             "sum_total_notificacoes": sum_total_notificacoes,
             "sum_total_infracoes": sum_total_infracoes,
             "taxa_notificacoes": format(taxa_notificacoes, '.2f'),

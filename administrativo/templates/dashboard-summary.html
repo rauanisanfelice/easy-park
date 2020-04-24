@@ -73,7 +73,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Comprados</span>
                     <span class="info-box-number">
-                        R$ {{ sum_valor_entradas|default_if_none:"0.00" }}
+                        R$ {{ sum_valor_entradas|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Em carteira</span>
                     <span class="info-box-number">
-                        R$ {{ sum_valor_carteira|default_if_none:"0.00" }}
+                        R$ {{ sum_valor_carteira|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Utilizados</span>
                     <span class="info-box-number">
-                        R$ {{ sum_valor_saidas|default_if_none:"0.00" }}
+                        R$ {{ sum_valor_saidas|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de paradas</span>
                     <span class="info-box-number">
-                        {{ sum_total_paradas|default_if_none:"0.00" }}
+                        {{ sum_total_paradas|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -135,7 +135,21 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de paradas ativas</span>
                     <span class="info-box-number">
-                        {{ sum_total_paradas_ativas|default_if_none:"0.00" }}
+                        {{ sum_total_paradas_ativas|default_if_none:"0" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- VEICULOS CADASTRADOS -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-car-side"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Total de veículos cadastrados</span>
+                    <span class="info-box-number">
+                        {{ total_veiculos_cadastrados|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -150,7 +164,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de notificações</span>
                     <span class="info-box-number">
-                        {{ sum_total_notificacoes|default_if_none:"0.00" }}
+                        {{ sum_total_notificacoes|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -164,7 +178,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de notificações</span>
                     <span class="info-box-number">
-                        {{ taxa_notificacoes|default_if_none:"0.00" }}<small>%</small>
+                        {{ taxa_notificacoes|default_if_none:"0" }}<small>%</small>
                     </span>
                 </div>
             </div>
@@ -178,7 +192,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de infrações</span>
                     <span class="info-box-number">
-                        {{ sum_total_infracoes|default_if_none:"0.00" }}
+                        {{ sum_total_infracoes|default_if_none:"0" }}
                     </span>
                 </div>
             </div>
@@ -192,7 +206,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Taxa de infrações</span>
                     <span class="info-box-number">
-                        {{ taxa_infracoes|default_if_none:"0.00" }}<small>%</small>
+                        {{ taxa_infracoes|default_if_none:"0" }}<small>%</small>
                     </span>
                 </div>
             </div>
@@ -212,7 +226,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de horas válidas</span>
                     <span class="info-box-number">
-                        {{ horas_validas|default_if_none:"0.00" }}<small>h</small>
+                        {{ horas_validas|default_if_none:"0" }}<small>h</small>
                     </span>
                 </div>
             </div>
@@ -226,7 +240,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Total de horas válidas usadas</span>
                     <span class="info-box-number">
-                        {{ total_horas_paradas|default_if_none:"0.00" }}<small>h</small>
+                        {{ total_horas_paradas|default_if_none:"0" }}<small>h</small>
                     </span>
                 </div>
             </div>
@@ -240,7 +254,7 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Delta</span>
                     <span class="info-box-number">
-                        {{ delta_horas_paradas|default_if_none:"0.00" }}<small>h</small>
+                        {{ delta_horas_paradas|default_if_none:"0" }}<small>h</small>
                     </span>
                 </div>
             </div>
