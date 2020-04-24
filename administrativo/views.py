@@ -39,7 +39,7 @@ class Dashboard(View):
         # TODO DEIXAR UM FILTRO DE MES E ANO INICIALMENTE SELECIONADO PARA NAO FICAR PESADO AO CARREGAR A PAGINA
         # OBJETOS
         sum_valor_entradas = Carteira.objects.filter(tipo_lancamento='en')
-        sum_valor_saidas = Carteira.objects.filter(tipo_lancamento='sa')
+        sum_valor_saidas = Parada.objects.all()
         sum_total_paradas = Parada.objects.all()
         sum_total_paradas_ativas = Parada.objects.filter(valido=True)
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao)
@@ -53,7 +53,7 @@ class Dashboard(View):
         if ano:
             # CREDITOS
             sum_valor_entradas = sum_valor_entradas.filter(data_insercao__year=ano)
-            sum_valor_saidas = sum_valor_saidas.filter(data_insercao__year=ano)
+            sum_valor_saidas = sum_valor_saidas.filter(data_parada__year=ano)
 
             # PARADAS
             sum_total_paradas = sum_total_paradas.filter(data_parada__year=ano)
@@ -73,7 +73,7 @@ class Dashboard(View):
         if mes:
             # CREDITOS
             sum_valor_entradas = sum_valor_entradas.filter(data_insercao__month=mes)
-            sum_valor_saidas = sum_valor_saidas.filter(data_insercao__month=mes)
+            sum_valor_saidas = sum_valor_saidas.filter(data_parada__month=mes)
 
             # PARADAS
             sum_total_paradas = sum_total_paradas.filter(data_parada__month=mes)
@@ -94,7 +94,7 @@ class Dashboard(View):
         ##########################################
         # AGGREGATE
         sum_valor_entradas = sum_valor_entradas.aggregate(Sum('valor'))['valor__sum']
-        sum_valor_saidas = sum_valor_saidas.aggregate(Sum('valor'))['valor__sum']
+        sum_valor_saidas = sum_valor_saidas.aggregate(Sum('quantidade_horas__valor'))['quantidade_horas__valor__sum']
         sum_total_paradas = sum_total_paradas.aggregate(Count('valido'))['valido__count']
         sum_total_paradas_ativas  = sum_total_paradas_ativas.aggregate(Count('valido'))['valido__count']
         sum_total_notificacoes = sum_total_notificacoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
