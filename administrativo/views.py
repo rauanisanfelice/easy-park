@@ -134,9 +134,10 @@ class Dashboard(View):
         else:
             total_horas_paradas = sum_total_horas_paradas['quantidade_horas__horas__sum'] + (sum_total_horas_paradas['quantidade_horas__minutos__sum'] / 60)
         delta_horas_paradas = total_horas_paradas - horas_validas
-                
+
         ##########################################
-        return render(request, self.retorno, {
+        # RETORNO
+        dict_retorno = {
             "sum_valor_entradas": sum_valor_entradas,
             "sum_valor_carteira": sum_valor_carteira,
             "sum_valor_saidas": sum_valor_saidas,
@@ -152,7 +153,8 @@ class Dashboard(View):
             "delta_horas_paradas": delta_horas_paradas,
             "pesquisasFuncionarios": pesquisasFuncionarios,
             "vendasFuncionarios": vendasFuncionarios,
-        })
+        }
+        return render(request, self.retorno, dict_retorno)
     
     def post(self, request):
         return render(request, self.retorno)
