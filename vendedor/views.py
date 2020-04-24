@@ -4,7 +4,7 @@ from django.views.generic import View
 from django.contrib.admin.views.decorators import staff_member_required
 from usuario.models import Veiculo, Notificacao, TipoNotificacao, HorasEstacionar, Parada
 from usuario.views import check_veiculo_horario
-from .models import PesquisaVeiculo
+from .models import PesquisaVeiculo, VendaFuncionario
 from .forms import FormCompraCreditos
 
 import logging
@@ -85,29 +85,23 @@ class VenderCreditos(View):
         form_class = FormCompraCreditos(user=request.user)
 
         # CRIA VEICULO DA VENDA DO FUNCIONARIO
-        try:
-            veiculo = Veiculo(placa=placa, apelido='venda funcionario', ativo=True,user=None)
-            veiculo.save()
-        except:
-            logger.error(f'Erro ao criar veiculo -  Placa do Veiculo ({placa})')
-            return render(request, self.retorno, {
-                "form": form_class,
-                "error": "True",
-                "error_mensagem": "Algo aconteceu de errado! Por gentileza tentar novamente mais tarde.",
-            })
+        veiculo = Veiculo(placa=placa, apelido='venda funcionario', ativo=True,user=None)
+        parada = Parada(veiculo=veiculo,user=None,quantidade_horas=hora_selecionada)
+        venda = VendaFuncionario(funcionario=request.user, veiculo=veiculo, parada=parada)
         
         # REALIZA A PARADA
         try:
-            parada = Parada(veiculo=veiculo,user=None,quantidade_horas=hora_selecionada)
+            veiculo.save()
             parada.save()
+            venda.save()
         except:
-            logger.error(f'Erro gerar Parada - Palca do Veiculo ({placa.id})')
+            logger.error(f'Erro gerar Parada - Placa do Veiculo ({placa}) - Id Hora ({hora}) - Funcionario {request.user.id}')
             return render(request, self.retorno, {
                 "form": form_class,
                 "error": "True",
                 "error_mensagem": "Algo aconteceu de errado! Por gentileza tentar novamente mais tarde.",
             })
-        
+
         return render(request, self.retorno, {
             "form": form_class,
             "sucesso": "True",
