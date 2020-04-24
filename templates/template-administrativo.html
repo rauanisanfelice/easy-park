@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="{% static 'plugins/AdminLTE-3.0.2/dist/css/adminlte.min.css' %}">
         <!-- Google Font: Source Sans Pro -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
+        
         {% comment %} MY STYLE {% endcomment %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/style-administrativo.css' %}">
 
@@ -83,6 +83,19 @@
                                     </a>
                                 </div>
                             </div>
+
+                            <!-- MENU -->
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <a href="{% url 'dashboard' %}" class="btn btn-block btn-secondary">Dados gerais</a>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <a href="{% url 'historico' %}" class="btn btn-block btn-secondary">Histórico</a>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <a href="{% url 'report' %}" class="btn btn-block btn-secondary">Relatórios</a>
+                                </div>
+                            </div><br>
                             
                             <!-- BODY -->
                             {% block body %}{% endblock %}
@@ -116,13 +129,36 @@
         </script>
         <script src="{% static 'plugins/AdminLTE-3.0.2/dist/js/adminlte.min.js' %}"></script>
         
-        <!-- AM CHARTS 4 -->
-        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/core.js' %}"></script>
-        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/charts.js' %}"></script>
-        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/dataviz.js' %}"></script>
-        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/animated.js' %}"></script>
-        <script type="text/javascript" src="{% static 'plugins/amcharts-v4/lang/pt_BR.js' %}"></script>
+        <!-- Keep alive -->
+        <script type="text/javascript">
 
+            var keepAliveTimeout = 5*60*1000;
+
+            window.addEventListener("load", function () {
+                setTimeout(keepAliveWorker, keepAliveTimeout);
+            }, false);
+
+            function keepAliveWorker() {
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'keepalive' %}",
+                    dataType: "html",
+                    success: function(resp) {
+                        console.log('Keep alive.');
+                    },
+                    error: function(rs, e) {
+                        console.log('ERROR')
+                        console.log(rs);
+                        console.log(e);
+                        console.log(e.message);
+                    },
+                    complete: function() {
+                        setTimeout(keepAliveWorker, keepAliveTimeout); // Schedule the next request when the current one's complete
+                    }
+                });
+            }
+        </script>
+        
         {% block script %}{% endblock %}
     </body>
 

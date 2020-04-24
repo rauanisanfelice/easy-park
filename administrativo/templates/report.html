@@ -1,0 +1,148 @@
+{% extends 'template-administrativo.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Dashboards - Relatório{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+    {% comment %} MENSAGENS DE RETORNO {% endcomment %}
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
+        <p class="font-weight-bold">
+            {{ error_mensagem }}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- FILTROS -->
+    <div class="row">
+        <h5 class="font-weight-bold">Filtros</h5>
+    </div>
+    <form action="." method="get">{% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="ano" name="ano">
+                    <option selected value="">Ano</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <select class="browser-default custom-select" id="mes" name="mes">
+                    <option selected value="">Mês</option>
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                    <option value="6">06</option>
+                    <option value="7">07</option>
+                    <option value="8">08</option>
+                    <option value="9">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <button type="submit" class="btn btn-info btn-block" name="filtrar" title="Filtrar" value="Filtrar">Filtrar</button>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <button type="submit" class="btn btn-warning btn-block" name="limpar" title="Limpar filtros" value="Limpar">Limpar</button>
+            </div>
+            <div class="col-12 col-sm-12 col-md-2">
+                <button type="submit" class="btn btn-success btn-block" formmethod="post" name="exportar" title="Exportar relatório" value="Exportar">Exportar</button>
+            </div>
+        </div>
+    </form><br>
+
+    <!-- TABELA -->
+    <div class="row">
+        <!-- GRÁFICOS DE  -->
+        <div class="col-12 col-sm-12 col-md-12">
+            <span>Relatório</span>
+        </div>
+        <!-- CRÉDITOS COMPRADOS  -->
+        <div class="col-12 col-sm-6 col-md-12">
+            <table id="table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Placa</th>
+                        <th>Usuário</th>
+                        <th>Data</th>
+                        <th>Horas de estacionamento</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if paradas %}
+                        {% for parada in paradas %}
+                        <tr>
+                            <td>{{ parada.veiculo.placa }}</td>
+                            <td>{% if parada.user %}{{ parada.user.first_name }}{% else %}{% endif %}</td>
+                            <td>{{ parada.data_parada }}</td>
+                            <td>{{ parada.quantidade_horas.descricao_horas }}</td>
+                            <td>{{ parada.quantidade_horas.valor }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>   
+
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+    <!-- DataTables -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+
+    <script>
+        $(function () {
+            $('#table').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "cell-border": false,
+                "language": {
+                    "decimal":        "",
+                    "emptyTable":     "Não possui registros",
+                    "info":           "Mostrando _START_ até _END_ de _TOTAL_",
+                    "infoEmpty":      "Mostrando 0 até 0 de 0",
+                    "infoFiltered":   "(filtro _MAX_ total)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Mostrar _MENU_",
+                    "loadingRecords": "Carregando...",
+                    "processing":     "Carregando...",
+                    "search":         "Busca:",
+                    "zeroRecords":    "Não foi localizado nenhum registro",
+                    "paginate": {
+                        "first":      "Início",
+                        "last":       "Última",
+                        "next":       "Próxima",
+                        "previous":   "Anterior"
+                    },
+                    "aria": {
+                        "sortAscending":  ": Click para ordernar crescente",
+                        "sortDescending": ": Click para ordernar decrescente"
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

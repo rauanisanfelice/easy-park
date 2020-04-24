@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import View
+from django.http import HttpResponse
+from openpyxl import Workbook
 
 from django.db.models import Sum, Count
 
 from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao, Funcionario, Veiculo
 from vendedor.models import PesquisaVeiculo, VendaFuncionario
+
 import calendar
 import datetime
 
@@ -154,3 +157,87 @@ class Dashboard(View):
     def post(self, request):
         return render(request, self.retorno)
 
+
+class Historico(View):
+    retorno = 'dashboard-historico.html'
+    
+    def get(self, request):
+        return render(request, self.retorno)
+    
+
+
+class Report(View):
+    retorno = 'report.html'
+    
+    def get(self, request):
+        if 'limpar' in request.GET:
+            ano = None
+            mes = None
+        else:    
+            ano = request.GET.get('ano', None)
+            mes = request.GET.get('mes', None)    
+
+        paradas = Parada.objects.all()
+        if ano:
+            paradas = paradas.filter(data_parada__year=ano)
+        if mes:
+            paradas = paradas.filter(data_parada__month=mes)
+
+        return render(request, self.retorno, {
+            "paradas": paradas,
+        })
+    
+    
+    def post(self, request):
+        ano = request.POST.get('ano', None)
+        mes = request.POST.get('mes', None)
+
+        paradas = Parada.objects.all()
+        if ano:
+            paradas = paradas.filter(data_parada__year=ano)
+            
+        if mes:
+            paradas = paradas.filter(data_parada__month=mes)
+        
+        kwargs = {"paradas": paradas}
+        return ExportarCSV(request, **kwargs)
+
+
+def ExportarCSV(self, **kwargs):    
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',)
+    response['Content-Disposition'] = 'attachment; filename={date}-paradas.xlsx'.format(date=datetime.datetime.now().strftime('%Y-%m-%d'),)
+    response['paradas'] = kwargs['paradas']
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Paradas'
+
+    # DEFINE OS CABECALHOS
+    columns = ['Placa','Usuario','Data','Hora','HoraEstacionado','Valor']
+    row_num = 1
+
+    # INSERE OS CABECALHOS
+    for col_num, column_title in enumerate(columns, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+
+    for parada in kwargs['paradas']:
+
+        row_num += 1
+        if parada.user:
+            row = [parada.veiculo.placa,parada.user.first_name,parada.data_parada,parada.hora_parada,parada.quantidade_horas.descricao_horas,parada.quantidade_horas.valor]
+        else:
+            row = [parada.veiculo.placa,None,parada.data_parada,parada.hora_parada,parada.quantidade_horas.descricao_horas,parada.quantidade_horas.valor]
+        
+        # INCLUI OS DADOS NO ARQUIVO
+        for col_num, cell_value in enumerate(row, 1):
+            cell = worksheet.cell(row=row_num, column=col_num)
+            cell.value = cell_value
+
+    workbook.save(response)
+    return response
+
+
+def keepalive(request):
+    html = "<html><body>KeepAlive Ok.</body></html>"
+    return HttpResponse(html)
