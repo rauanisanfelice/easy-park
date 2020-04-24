@@ -245,8 +245,121 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><br>
 
+    <!-- RANKING -->
+    <div class="row">
+        <!-- RANKING VENDEDORES -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <span class="font-weight-bold">Ranking top vendedores</span>
+        </div>
+        <!-- RANKING PESQUISAS -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <span class="font-weight-bold">Ranking top pesquisas</span>
+        </div>
+        <!-- RANKING FUNCIONARIOS -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <span class="font-weight-bold">Ranking top funcionários</span>
+        </div>
+        <div class="w-100"></div>
+
+        <!-- RANKING VENDEDORES -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <table class="table table-bordered">
+                <thead>                  
+                    <tr>
+                        <th style="width: 40px">Ranking</th>
+                        <th>Funcionário</th>
+                        <th>Vendas</th>
+                        <th>Faturamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if vendasFuncionarios %}
+                        {% for vendas in vendasFuncionarios %}
+                            <tr>
+                                <td>{{ forloop.counter }}.</td>
+                                <td>{{ vendas.funcionario__first_name }}</td>
+                                <td>{{ vendas.total }}</td>
+                                <td>{{ vendas.parada__quantidade_horas__valor }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RANKING PESQUISAS -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <table class="table table-bordered">
+                <thead>                  
+                    <tr>
+                        <th style="width: 40px">Ranking</th>
+                        <th>Funcionário</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if pesquisasFuncionarios %}
+                        {% for funcionario in pesquisasFuncionarios %}
+                            <tr>
+                                <td>{{ forloop.counter }}.</td>
+                                <td>{{ funcionario.funcionario__first_name }}</td>
+                                <td>{{ funcionario.total }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RANKING FUNCIONARIOS -->
+        <div class="col-12 col-sm-12 col-md-4">
+            <table class="table table-bordered">
+                <thead>                  
+                    <tr>
+                        <th style="width: 40px">Ranking</th>
+                        <th>Funcionário</th>
+                        <th>Vendas</th>
+                        <th>Faturamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.</td>
+                        <td>Teste</td>
+                        <td>35</td>
+                        <td>R$ 50,00</td>
+                    </tr>
+                    <tr>
+                        <td>2.</td>
+                        <td>Teste</td>
+                        <td>35</td>
+                        <td>R$ 50,00</td>
+                    </tr>
+                    <tr>
+                        <td>3.</td>
+                        <td>Teste</td>
+                        <td>35</td>
+                        <td>R$ 50,00</td>
+                    </tr>
+                    <tr>
+                        <td>4.</td>
+                        <td>Teste</td>
+                        <td>35</td>
+                        <td>R$ 50,00</td>
+                    </tr>
+                    <tr>
+                        <td>5.</td>
+                        <td>Teste</td>
+                        <td>35</td>
+                        <td>R$ 50,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 
     <!-- GRAFICOS -->
     <div class="row">

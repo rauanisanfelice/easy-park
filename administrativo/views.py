@@ -3,8 +3,8 @@ from django.views.generic import View
 
 from django.db.models import Sum, Count
 
-from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao
-
+from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao, Funcionario
+from vendedor.models import PesquisaVeiculo, VendaFuncionario
 import calendar
 import datetime
 
@@ -23,10 +23,8 @@ class Dashboard(View):
         else:    
             ano = request.GET.get('ano', None)
             mes = request.GET.get('mes', None)    
-            if ano == '': ano = None
-            else: ano_dias = int(ano)
-            if mes == '' : mes = None
-            else: mes_dias = int(mes)
+            if ano: ano_dias = int(ano)
+            if mes: mes_dias = int(mes)
                 
 
         # NOTIFICAÇÕES E INFRAÇÕES
@@ -38,7 +36,8 @@ class Dashboard(View):
         dias_validos = dias_mes - (DIAS_UTEIS_SEMANA % dias_mes)
         horas_validas = dias_validos * HORAS_VALIDAS_DIA
 
-        # OBJETOS 
+        # TODO DEIXAR UM FILTRO DE MES E ANO INICIALMENTE SELECIONADO PARA NAO FICAR PESADO AO CARREGAR A PAGINA
+        # OBJETOS
         sum_valor_entradas = Carteira.objects.filter(tipo_lancamento='en')
         sum_valor_saidas = Carteira.objects.filter(tipo_lancamento='sa')
         sum_total_paradas = Parada.objects.all()
@@ -46,7 +45,10 @@ class Dashboard(View):
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao)
         sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao)
         sum_total_horas_paradas = Parada.objects.all()
+        pesquisasFuncionarios = PesquisaVeiculo.objects.all()
+        vendasFuncionarios = VendaFuncionario.objects.all()
 
+        ##########################################
         # FILTROS
         if ano:
             # CREDITOS
@@ -64,6 +66,10 @@ class Dashboard(View):
             # DESEMPENHO
             sum_total_horas_paradas = sum_total_horas_paradas.filter(data_parada__year=ano)
 
+            # RANKING
+            pesquisasFuncionarios = pesquisasFuncionarios.filter(data_pesquisa__year=ano)
+            vendasFuncionarios = vendasFuncionarios.filter(data_venda__year=ano)
+            
         if mes:
             # CREDITOS
             sum_valor_entradas = sum_valor_entradas.filter(data_insercao__month=mes)
@@ -79,7 +85,13 @@ class Dashboard(View):
 
             # DESEMPENHO
             sum_total_horas_paradas = sum_total_horas_paradas.filter(data_parada__month=mes)
+
+            # RANKING
+            pesquisasFuncionarios = pesquisasFuncionarios.filter(data_pesquisa__month=mes)
+            vendasFuncionarios = vendasFuncionarios.filter(data_venda__month=mes)
+
         
+        ##########################################
         # AGGREGATE
         sum_valor_entradas = sum_valor_entradas.aggregate(Sum('valor'))['valor__sum']
         sum_valor_saidas = sum_valor_saidas.aggregate(Sum('valor'))['valor__sum']
@@ -88,7 +100,10 @@ class Dashboard(View):
         sum_total_notificacoes = sum_total_notificacoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_infracoes = sum_total_infracoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_horas_paradas = sum_total_horas_paradas.aggregate(Sum('quantidade_horas__horas'), Sum('quantidade_horas__minutos'))
+        pesquisasFuncionarios = pesquisasFuncionarios.values('funcionario__first_name').annotate(total=Count('funcionario__first_name')).order_by('total')[:5]
+        vendasFuncionarios = vendasFuncionarios.values('funcionario__first_name', 'parada__quantidade_horas__valor').annotate(total=Count('funcionario__first_name'), sum=Count('parada__quantidade_horas__valor')).order_by('funcionario__first_name')[:5]
 
+        ##########################################
         # CALCULOS
         if sum_valor_entradas == None: sum_valor_entradas = 0
         if sum_valor_saidas == None: sum_valor_saidas = 0
@@ -114,7 +129,8 @@ class Dashboard(View):
         else:
             total_horas_paradas = sum_total_horas_paradas['quantidade_horas__horas__sum'] + (sum_total_horas_paradas['quantidade_horas__minutos__sum'] / 60)
         delta_horas_paradas = total_horas_paradas - horas_validas
-
+                
+        ##########################################
         return render(request, self.retorno, {
             "sum_valor_entradas": sum_valor_entradas,
             "sum_valor_carteira": sum_valor_carteira,
@@ -128,6 +144,8 @@ class Dashboard(View):
             "horas_validas": horas_validas,
             "total_horas_paradas": total_horas_paradas,
             "delta_horas_paradas": delta_horas_paradas,
+            "pesquisasFuncionarios": pesquisasFuncionarios,
+            "vendasFuncionarios": vendasFuncionarios,
         })
     
     def post(self, request):
