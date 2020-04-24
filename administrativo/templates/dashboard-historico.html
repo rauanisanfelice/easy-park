@@ -93,22 +93,7 @@
         <div class="col-12 col-sm-6 col-md-12">
             <div id="charthistorico" class="admin-grafico"></div>
         </div>
-    </div>
-
-    <!--
-        Metricas:
-        * Notificações lidas;
-        * Buscas por funcionários média;
-        * Top 5 funcionarios que mais realizaram buscas;
-        * Top 5 funcionarios que mais realizaram notificações;
-        * Top 5 funcionarios que mais realizaram buscas e notificações;
-        Gráficos:
-        * Gráfico de totais de paradas/infrações;
-        * Gráfico histórico de paradas/infrações;
-        * Gráfico de total de vendas por região;
-    -->
-    
-
+    </div>    
 {% endblock %}
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
@@ -121,25 +106,64 @@
     <script type="text/javascript" src="{% static 'plugins/amcharts-v4/lang/pt_BR.js' %}"></script>
 
     <script>
+        var meses = []
+        var anos = []
+        var paradas = []
+        var notificacoes= []
+        var infracoes = []
+
+        {% comment %} ANO / MES / PARADAS {% endcomment %}
+        {% if paradas %}
+            {% for parada in paradas %}
+                meses.push('{{ parada.mes|date:"m" }}')
+                anos.push('{{ parada.ano|date:"Y" }}')
+                paradas.push('{{ parada.total }}')
+            {% endfor %}
+        {% endif %}
+        
+        {% comment %} NOTIFICACOES {% endcomment %}
+        {% if notificacoes %}
+            {% for notificacao in notificacoes %}
+                notificacoes.push('{{ notificacao.total }}')
+            {% endfor %}
+        {% endif %}
+
+        {% comment %} INFRAÇÕES {% endcomment %}
+        {% if infracoes %}
+            {% for infracao in infracoes %}
+                infracoes.push('{{ infracao.total }}')
+            {% endfor %}
+        {% endif %}
+        
+        var data = [];
+        for (var i = 0; i < paradas.length; i++) {
+            var dict = {};
+            dict['date'] = new Date(anos[i] ,meses[i], 1);
+            dict['value1'] = paradas[i];
+            dict['value2'] = notificacoes[i];
+            dict['value3'] = infracoes[i];
+            data.push(dict);
+        }
+
         am4core.ready(function () {
 
             // Themes begin
             am4core.useTheme(am4themes_animated);
-            // Themes end
 
             // Create chart instance
             var chart = am4core.create("charthistorico", am4charts.XYChart);
 
             // Add data
-            chart.data = [
-                { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
-                { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
-                { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
-                { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
-                { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
-                { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
-                { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
-            ]
+            chart.data = data;
+            //chart.data = [
+            //    { date: new Date(2019, 5, 12), value1: 50, value2: 48, value3: new Date(2019, 5, 5) },
+            //    { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
+            //    { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
+            //    { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
+            //    { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
+            //    { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
+            //    { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
+            //]
 
             // Create axes
             var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -153,12 +177,20 @@
             series.dataFields.dateX = "date";
             series.strokeWidth = 2;
             series.minBulletDistance = 10;
-            series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
+            series.tooltipText = "[bold]{date.formatDate()}\nParadas:[/] {value1}\n[bold]Notificações:[/] {value2}\n[bold]Infrações:[/] {value3}[bold]";
             series.tooltip.pointerOrientation = "vertical";
 
             // Create series
             var series2 = chart.series.push(new am4charts.LineSeries());
             series2.dataFields.valueY = "value2";
+            series2.dataFields.dateX = "date";
+            series2.strokeWidth = 2;
+            series2.strokeDasharray = "3,4";
+            series2.stroke = series.stroke;
+
+            // Create series
+            var series2 = chart.series.push(new am4charts.LineSeries());
+            series2.dataFields.valueY = "value3";
             series2.dataFields.dateX = "date";
             series2.strokeWidth = 2;
             series2.strokeDasharray = "3,4";

@@ -3,6 +3,7 @@ from django.views.generic import View
 from django.http import HttpResponse
 from openpyxl import Workbook
 
+from django.db.models.functions import TruncYear, TruncMonth
 from django.db.models import Sum, Count
 
 from usuario.models import Carteira, Parada, TipoNotificacao, Notificacao, Funcionario, Veiculo
@@ -164,8 +165,44 @@ class Historico(View):
     retorno = 'dashboard-historico.html'
     
     def get(self, request):
-        return render(request, self.retorno)
-    
+        if 'limpar' in request.GET:
+            ano_inicio = datetime.datetime.now().year
+            mes_inicio = datetime.datetime.now().month
+        else:    
+            ano_inicio = request.GET.get('ano', None)
+            mes_inicio = request.GET.get('mes', None)
+            if not ano_inicio: ano_inicio = datetime.datetime.now().year
+            if not mes_inicio: mes_inicio = datetime.datetime.now().month
+        ano_fim = int(ano_inicio) - 1
+        mes_fim = mes_inicio
+        
+        # NOTIFICAÇÕES E INFRAÇÕES
+        tp_notificacao = TipoNotificacao.objects.get(tipo='NOTIC')
+        tp_infracao = TipoNotificacao.objects.get(tipo='ALERT')
+
+        # PARADAS
+        paradas = Parada.objects.filter(data_parada__year__gte=ano_fim, data_parada__month__gte=mes_fim, data_parada__year__lte=ano_inicio, data_parada__month__lte=mes_inicio)
+        paradas = paradas.annotate(ano=TruncYear('data_parada'), mes=TruncMonth('data_parada'))
+        paradas = paradas.values('ano', 'mes').annotate(total=Count('mes'))
+        
+        # NOTIFICACOES
+        notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
+        notificacoes = notificacoes.annotate(ano=TruncYear('data_notificacao'), mes=TruncMonth('data_notificacao'))
+        notificacoes = notificacoes.values('ano', 'mes').annotate(total=Count('mes'))
+
+        # INFRACOES
+        infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
+        infracoes = infracoes.annotate(ano=TruncYear('data_notificacao'), mes=TruncMonth('data_notificacao'))
+        infracoes = infracoes.values('ano', 'mes').annotate(total=Count('mes'))
+
+        # RETORNO
+        dict_retorno = {
+            "paradas": paradas,
+            "notificacoes": notificacoes,
+            "infracoes": infracoes,
+        }
+
+        return render(request, self.retorno, dict_retorno)
 
 
 class Report(View):
@@ -177,7 +214,7 @@ class Report(View):
             mes = None
         else:    
             ano = request.GET.get('ano', None)
-            mes = request.GET.get('mes', None)    
+            mes = request.GET.get('mes', None)
 
         paradas = Parada.objects.all()
         if ano:
