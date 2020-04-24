@@ -113,54 +113,62 @@
 
 {% comment %} BLOCO DE SCPRITS {% endcomment %}
 {% block script %}
-<script>
-    am4core.ready(function () {
+    <!-- AM CHARTS 4 -->
+    <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/core.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/amcharts-v4/js/charts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/dataviz.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/amcharts-v4/themes/animated.js' %}"></script>
+    <script type="text/javascript" src="{% static 'plugins/amcharts-v4/lang/pt_BR.js' %}"></script>
 
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-        // Themes end
+    <script>
+        am4core.ready(function () {
 
-        // Create chart instance
-        var chart = am4core.create("charthistorico", am4charts.XYChart);
+            // Themes begin
+            am4core.useTheme(am4themes_animated);
+            // Themes end
 
-        // Add data
-        chart.data = [
-            { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
-            { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
-            { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
-            { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
-            { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
-            { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
-            { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
-        ]
+            // Create chart instance
+            var chart = am4core.create("charthistorico", am4charts.XYChart);
 
-        // Create axes
-        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-        dateAxis.renderer.minGridDistance = 50;
+            // Add data
+            chart.data = [
+                { date: new Date(2019, 5, 12), value1: 50, value2: 48, previousDate: new Date(2019, 5, 5) },
+                { date: new Date(2019, 5, 13), value1: 53, value2: 51, previousDate: new Date(2019, 5, 6) },
+                { date: new Date(2019, 5, 14), value1: 56, value2: 58, previousDate: new Date(2019, 5, 7) },
+                { date: new Date(2019, 5, 15), value1: 52, value2: 53, previousDate: new Date(2019, 5, 8) },
+                { date: new Date(2019, 5, 16), value1: 48, value2: 44, previousDate: new Date(2019, 5, 9) },
+                { date: new Date(2019, 5, 17), value1: 47, value2: 42, previousDate: new Date(2019, 5, 10) },
+                { date: new Date(2019, 5, 18), value1: 59, value2: 55, previousDate: new Date(2019, 5, 11) }
+            ]
 
-        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+            // Create axes
+            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+            dateAxis.renderer.minGridDistance = 50;
 
-        // Create series
-        var series = chart.series.push(new am4charts.LineSeries());
-        series.dataFields.valueY = "value1";
-        series.dataFields.dateX = "date";
-        series.strokeWidth = 2;
-        series.minBulletDistance = 10;
-        series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
-        series.tooltip.pointerOrientation = "vertical";
+            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 
-        // Create series
-        var series2 = chart.series.push(new am4charts.LineSeries());
-        series2.dataFields.valueY = "value2";
-        series2.dataFields.dateX = "date";
-        series2.strokeWidth = 2;
-        series2.strokeDasharray = "3,4";
-        series2.stroke = series.stroke;
+            // Create series
+            var series = chart.series.push(new am4charts.LineSeries());
+            series.dataFields.valueY = "value1";
+            series.dataFields.dateX = "date";
+            series.strokeWidth = 2;
+            series.minBulletDistance = 10;
+            series.tooltipText = "[bold]{date.formatDate()}:[/] {value1}\n[bold]{previousDate.formatDate()}:[/] {value2}";
+            series.tooltip.pointerOrientation = "vertical";
 
-        // Add cursor
-        chart.cursor = new am4charts.XYCursor();
-        chart.cursor.xAxis = dateAxis;
+            // Create series
+            var series2 = chart.series.push(new am4charts.LineSeries());
+            series2.dataFields.valueY = "value2";
+            series2.dataFields.dateX = "date";
+            series2.strokeWidth = 2;
+            series2.strokeDasharray = "3,4";
+            series2.stroke = series.stroke;
 
-    }); // end am4core.ready()
-</script>
+            // Add cursor
+            chart.cursor = new am4charts.XYCursor();
+            chart.cursor.xAxis = dateAxis;
+
+        }); // end am4core.ready()
+    </script>
+    
 {% endblock %}
