@@ -48,6 +48,7 @@ class Dashboard(View):
         sum_total_paradas_ativas = Parada.objects.filter(valido=True)
         total_veiculos_cadastrados = Veiculo.objects.filter(ativo=True)
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao)
+        sum_total_notificacoes_lidas = Notificacao.objects.filter(data_lida__isnull=False)
         sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao)
         sum_total_horas_paradas = Parada.objects.all()
         pesquisasFuncionarios = PesquisaVeiculo.objects.all()
@@ -66,6 +67,7 @@ class Dashboard(View):
 
             # NOTIFICAÇÕES E INFRAÇÕES
             sum_total_notificacoes = sum_total_notificacoes.filter(data_notificacao__year=ano)
+            sum_total_notificacoes_lidas = sum_total_notificacoes_lidas.filter(data_notificacao__year=ano)
             sum_total_infracoes = sum_total_infracoes.filter(data_notificacao__year=ano)
 
             # DESEMPENHO
@@ -86,6 +88,7 @@ class Dashboard(View):
 
             # NOTIFICAÇÕES E INFRAÇÕES
             sum_total_notificacoes = sum_total_notificacoes.filter(data_notificacao__month=mes)
+            sum_total_notificacoes_lidas = sum_total_notificacoes_lidas.filter(data_notificacao__month=mes)
             sum_total_infracoes = sum_total_infracoes.filter(data_notificacao__month=mes)
 
             # DESEMPENHO
@@ -104,6 +107,7 @@ class Dashboard(View):
         sum_total_paradas_ativas  = sum_total_paradas_ativas.aggregate(Count('valido'))['valido__count']
         total_veiculos_cadastrados = total_veiculos_cadastrados.distinct('placa').count()
         sum_total_notificacoes = sum_total_notificacoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
+        sum_total_notificacoes_lidas = sum_total_notificacoes_lidas.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_infracoes = sum_total_infracoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_horas_paradas = sum_total_horas_paradas.aggregate(Sum('quantidade_horas__horas'), Sum('quantidade_horas__minutos'))
         pesquisasFuncionarios = pesquisasFuncionarios.values('funcionario__first_name').annotate(total=Count('funcionario__first_name')).order_by('total')[:5]
@@ -116,6 +120,7 @@ class Dashboard(View):
         if sum_total_paradas == None: sum_total_paradas = 0
         if sum_total_paradas_ativas == None: sum_total_paradas_ativas = 0
         if sum_total_notificacoes == None: sum_total_notificacoes = 0
+        if sum_total_notificacoes_lidas == None: sum_total_notificacoes_lidas = 0
         if sum_total_infracoes == None: sum_total_infracoes = 0
 
         # CREDITOS
@@ -124,9 +129,11 @@ class Dashboard(View):
         # NOTIFICAÇÕES E INFRAÇÕES
         if sum_total_paradas ==  0:
             taxa_notificacoes = 0
+            taxa_notificacoes_lidas = 0
             taxa_infracoes = 0
         else:
             taxa_notificacoes = float(((sum_total_notificacoes * 1) / sum_total_paradas) * 100)
+            taxa_notificacoes_lidas = float(((sum_total_notificacoes_lidas * 1) / sum_total_paradas) * 100)
             taxa_infracoes = float(((sum_total_infracoes * 1) / sum_total_paradas) * 100)
 
         # DESEMPENHO
@@ -146,8 +153,10 @@ class Dashboard(View):
             "sum_total_paradas_ativas": sum_total_paradas_ativas,
             "total_veiculos_cadastrados": total_veiculos_cadastrados,
             "sum_total_notificacoes": sum_total_notificacoes,
+            "sum_total_notificacoes_lidas": sum_total_notificacoes_lidas,
             "sum_total_infracoes": sum_total_infracoes,
             "taxa_notificacoes": format(taxa_notificacoes, '.2f'),
+            "taxa_notificacoes_lidas": format(taxa_notificacoes_lidas, '.2f'),
             "taxa_infracoes": format(taxa_infracoes, '.2f'),
             "horas_validas": horas_validas,
             "total_horas_paradas": total_horas_paradas,
@@ -242,7 +251,7 @@ class Report(View):
         return ExportarCSV(request, **kwargs)
 
 
-def ExportarCSV(self, **kwargs):    
+def ExportarCSV(self, **kwargs):
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',)
     response['Content-Disposition'] = 'attachment; filename={date}-paradas.xlsx'.format(date=datetime.datetime.now().strftime('%Y-%m-%d'),)
