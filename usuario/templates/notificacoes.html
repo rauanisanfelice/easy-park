@@ -32,13 +32,12 @@
                 </thead>
                 <tbody>
                     {% if notificacoes %}
-                        {% for notificaccao in notificacoes %}
+                        {% for notificacao in notificacoes %}
                             <tr>
-                                <td>{{ notificaccao.tipo_notificacao.descricao_titulo }}</td>
-                                <td>{{ notificaccao.data_notificacao }}</td>
+                                <td>{{ notificacao.tipo_notificacao.descricao_titulo }}</td>
+                                <td>{{ notificacao.data_notificacao }}</td>
                                 <td>
-                                    <a href="#" ><i class="far fa-eye btn btn-acao-verde"></i></a>
-                                    <a href="#" ><i class="far fa-eye btn btn-acao-verde"></i></a>
+                                    <a href="{% url 'notificacao' notificacao.id %}" title="Visualizar"><i class="far fa-eye btn btn-acao-verde"></i></a>
                                 </td>
                             </tr>
                         {% endfor %}

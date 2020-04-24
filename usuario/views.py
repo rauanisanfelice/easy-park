@@ -208,6 +208,15 @@ class PageNotificacoes(View):
             'notificacoes': notificacoes,
         })
 
+class PageNotificacao(View):
+    retorno = 'notificacao.html'
+
+    def get(self, request, id):
+        notificacao = Notificacao.objects.get(id=id)
+        notificacao.data_lida = datetime.datetime.now()
+        notificacao.save()
+        return render(request, self.retorno, {"notificacao": notificacao})
+
 
 class PageHistorico(View):
     retorno = 'historico.html'

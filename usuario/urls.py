@@ -12,6 +12,7 @@ urlpatterns = [
     path('perfil/', PagePerfil.as_view(), name='perfil'),
     path('informacoes/', PageInformacoes.as_view(), name='info'),
     path('notificacoes/', PageNotificacoes.as_view(), name='notificacoes'),
+    path('notificacao/<int:id>', PageNotificacao.as_view(), name='notificacao'),
     path('historico/', PageHistorico.as_view(), name='historico'),
     path('estacionar/', PageEstacionar.as_view(), name='estacionar'),
     path('veiculo/', PageVeiculo.as_view(), name='veiculo'),

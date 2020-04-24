@@ -1,0 +1,56 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Mensagem{% endblock %}
+{% block name_page %}Mensagem{% endblock %}
+{% block tree %}
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">/</div>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'notificacoes' %}" class="nav-link">Notificações</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">/</div>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">Mensagem</div>
+</li>
+{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+<div class="card card-solid card-outline">
+    <div class="card-body box-profile">
+        {% comment %} TABELA {% endcomment %}
+        <div class="card-body">
+            <div class="card-header">
+                <h3 class="card-title">Notificação</h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="mailbox-read-info">
+                    <h5>{{ notificacao.tipo_notificacao.descricao_titulo }}</h5>
+                    <h6><span class="mailbox-read-time float-right">{{ notificacao.data_notificacao }}</span></h6>
+                </div>
+                <div class="mailbox-read-message">
+                    <p>{{ notificacao.tipo_notificacao.descricao_full }}</p>                    
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="float-right">
+                    <a href="{% url 'notificacoes' %}" class="btn btn-default" title="Voltar"><i class="fas fa-reply"></i> Voltar</a>
+                </div>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+{% endblock %}
