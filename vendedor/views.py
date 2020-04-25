@@ -29,7 +29,7 @@ class VerificaVeiculo(View):
                 "acao": ""
             })
         else:
-            veiculo = Veiculo.objects.filter(placa=placa)[:1]
+            veiculo = Veiculo.objects.filter(placa=placa, ativo=True)[:1]
             try: # verifica se possui veiculo cadastrado
                 veiculo = veiculo[0]
             except:
@@ -40,21 +40,20 @@ class VerificaVeiculo(View):
             pesquisa.save()
 
             if not veiculo:
+                try:
+                    tipo_not = TipoNotificacao.objects.get(id=4)
+                    notificacao = Notificacao(parada=None, tipo_notificacao=tipo_not, placa=placa)
+                    notificacao.save()
+                except:
+                    logger.error(f'Erro ao noticar veiculo nao cadastrado - Placa ({placa}) - Id Funcionario ({request.user.id})')
                 return render(request, self.retorno, {
                     "error": "True",
                     "error_mensagem": "Veículo não esta cadastrado.",
                     "acao": "Realizar notificação via talão!",
                 })
-            else:
-                if not veiculo.ativo:
-                    return render(request, self.retorno, {
-                        "error": "True",
-                        "error_mensagem": "Veículo não esta cadastrado.",
-                        "acao": "Realizar notificação via talão!",
-                    })
-                
+            else:        
                 if check_veiculo_horario(request, None, veiculo):
-                    tipo_not = TipoNotificacao.objects.get(tipo='ALERT')
+                    tipo_not = TipoNotificacao.objects.get(id=3)
                     notificacao = Notificacao(parada=None, tipo_notificacao=tipo_not, user=veiculo.user)
                     notificacao.save()
                     return render(request, self.retorno, {
