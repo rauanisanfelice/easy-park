@@ -16,8 +16,9 @@ VALUES
   ('03:00',3,0,'R$ 07,00',7,true,4);
 
 
-INSERT INTO usuario_tiponotificacao ( tipo,descricao_titulo,descricao_full,ativo )
+INSERT INTO usuario_tiponotificacao ( observacao_interna,descricao_titulo,descricao_full,ativo )
 VALUES
-  ('NOTIC','Seu tempo está se esgotando.','Seu tempo esta esgotando, renove seu horário ou caso for necessário compre mais créditos.',true),
-  ('ESGOT','Seu tempo se esgotou!','Seu tempo esgotou, renove seu horário ou caso for necessário compre mais créditos.',true),
-  ('ALERT','Retire seu carro','Seu carro foi notificado, retire seu carro em 5 min, caso contrário será multado conforme lei ####.',true);
+  ('Alerta automático','Seu tempo está se esgotando.','Seu tempo esta esgotando, renove seu horário ou caso for necessário compre mais créditos.',true),
+  ('Alerta automático','Seu tempo se esgotou!','Seu tempo esgotou, renove seu horário ou caso for necessário compre mais créditos.',true),
+  ('Infração localizada por um funcionario, veículo cadastrado não realizou parada.','Retire seu carro','Seu carro foi notificado, retire seu carro em 5 min, caso contrário será multado conforme lei ####.',true),
+  ('Infração localizada por um funcionario, veículo não cadastrado.','Veículo não cadastrado.','Veículo não cadastrado.',true);

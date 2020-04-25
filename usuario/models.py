@@ -92,9 +92,9 @@ class Parada(models.Model):
 
 class TipoNotificacao(models.Model):
     
-    tipo = models.CharField(max_length=5)
+    observacao_interna = models.CharField(max_length=150, null=True)
     descricao_titulo = models.CharField(max_length=100)
-    descricao_full = models.CharField(max_length=150)
+    descricao_full = models.CharField(max_length=250)
     ativo = models.BooleanField(default=True)
 
     class Meta:
@@ -106,9 +106,10 @@ class Notificacao(models.Model):
     verbose_name_plural = 'notificacoes'
 
     parada = models.ForeignKey(Parada, on_delete=models.PROTECT, null=True)
+    placa = models.CharField(max_length=7, null=True)
     tipo_notificacao = models.ForeignKey(TipoNotificacao, on_delete=models.PROTECT)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="notificao_user")
-    funcionario = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="notificao_user", null=True)
+    funcionario = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     data_notificacao = models.DateTimeField(auto_now_add=True)
     data_lida = models.DateTimeField(null=True)

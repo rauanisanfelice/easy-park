@@ -31,8 +31,8 @@ class HorasEstacionarAdmin(admin.ModelAdmin):
 
 @admin.register(TipoNotificacao)
 class TipoNotificacaoAdmin(admin.ModelAdmin):
-    list_display = ('tipo', 'descricao_titulo', 'ativo')
-    ordering = ('tipo', )
+    list_display = ('id', 'descricao_titulo', 'ativo')
+    ordering = ('id', )
 
 
 @admin.register(ValoresCompra)

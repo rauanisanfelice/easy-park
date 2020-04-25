@@ -75,7 +75,7 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
     
     veiculo = Veiculo.objects.get(id=id_veiculo)
     horarario = HorasEstacionar.objects.get(id=id_horarario)
-    tipo_not = TipoNotificacao.objects.get(tipo=tipo_da_notificacao)
+    tipo_not = TipoNotificacao.objects.get(id=tipo_da_notificacao)
 
     notificacao = Notificacao(parada=parada, tipo_notificacao=tipo_not, user=request.user)
     notificacao.save()
@@ -87,7 +87,7 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
         # AGENDA NOTIFICACAO
         data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos)
         delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
-        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 'ESGOT'])
+        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 2])
         t.start()
 
 @login_required
@@ -297,7 +297,7 @@ class PageEstacionar(View):
                         # AGENDA NOTIFICACAO
                         data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos - 5)
                         delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
-                        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 'NOTIC'])
+                        t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 1])
                         t.start()
                         
                         return render(request, self.retorno, {

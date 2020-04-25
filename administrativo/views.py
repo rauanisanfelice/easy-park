@@ -32,8 +32,8 @@ class Dashboard(View):
                 
 
         # NOTIFICAÇÕES E INFRAÇÕES
-        tp_notificacao = TipoNotificacao.objects.get(tipo='NOTIC')
-        tp_infracao = TipoNotificacao.objects.get(tipo='ALERT')
+        tp_notificacao = TipoNotificacao.objects.filter(id__in=[1,2])
+        tp_infracao = TipoNotificacao.objects.filter(id__in=[3,4])
 
         # DESEMPENHO
         dias_mes = calendar.monthrange(ano_dias, mes_dias)[1]
@@ -47,9 +47,9 @@ class Dashboard(View):
         sum_total_paradas = Parada.objects.all()
         sum_total_paradas_ativas = Parada.objects.filter(valido=True)
         total_veiculos_cadastrados = Veiculo.objects.filter(ativo=True)
-        sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao)
+        sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao__in=tp_notificacao)
         sum_total_notificacoes_lidas = Notificacao.objects.filter(data_lida__isnull=False)
-        sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao)
+        sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao__in=tp_infracao)
         sum_total_horas_paradas = Parada.objects.all()
         pesquisasFuncionarios = PesquisaVeiculo.objects.all()
         vendasFuncionarios = VendaFuncionario.objects.all()
@@ -186,8 +186,8 @@ class Historico(View):
         mes_fim = mes_inicio
         
         # NOTIFICAÇÕES E INFRAÇÕES
-        tp_notificacao = TipoNotificacao.objects.get(tipo='NOTIC')
-        tp_infracao = TipoNotificacao.objects.get(tipo='ALERT')
+        tp_notificacao = TipoNotificacao.objects.filter(id__in=[1,2])
+        tp_infracao = TipoNotificacao.objects.filter(id__in=[3,4])
 
         # PARADAS
         paradas = Parada.objects.filter(data_parada__year__gte=ano_fim, data_parada__month__gte=mes_fim, data_parada__year__lte=ano_inicio, data_parada__month__lte=mes_inicio)
@@ -195,12 +195,12 @@ class Historico(View):
         paradas = paradas.values('ano', 'mes').annotate(total=Count('mes'))
         
         # NOTIFICACOES
-        notificacoes = Notificacao.objects.filter(tipo_notificacao=tp_notificacao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
+        notificacoes = Notificacao.objects.filter(tipo_notificacao__in=tp_notificacao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
         notificacoes = notificacoes.annotate(ano=TruncYear('data_notificacao'), mes=TruncMonth('data_notificacao'))
         notificacoes = notificacoes.values('ano', 'mes').annotate(total=Count('mes'))
 
         # INFRACOES
-        infracoes = Notificacao.objects.filter(tipo_notificacao=tp_infracao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
+        infracoes = Notificacao.objects.filter(tipo_notificacao__in=tp_infracao,data_notificacao__year__gte=ano_fim, data_notificacao__month__gte=mes_fim, data_notificacao__year__lte=ano_inicio, data_notificacao__month__lte=mes_inicio)
         infracoes = infracoes.annotate(ano=TruncYear('data_notificacao'), mes=TruncMonth('data_notificacao'))
         infracoes = infracoes.values('ano', 'mes').annotate(total=Count('mes'))
 
