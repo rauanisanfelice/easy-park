@@ -90,6 +90,23 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
         t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 'ESGOT'])
         t.start()
 
+@login_required
+def ValidaParadasExpiradas(request):
+    paradasUsuario = Parada.objects.filter(user=request.user, valido=True)
+    
+    for parada in paradasUsuario:
+        data_expirada = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas)
+        data_expirada = parada.data_parada + datetime.timedelta(minutes=parada.quantidade_horas.minutos)
+        
+        hoje = datetime.datetime.now()
+        hoje = hoje.astimezone(pytz.timezone('America/Sao_Paulo'))
+        data_expirada = data_expirada.astimezone(pytz.timezone('America/Sao_Paulo'))
+
+        if data_expirada < hoje:
+            # PARADA EXPIRADA
+            parada.valido = False
+            parada.save()
+
 
 ########################################################################
 class SignUp(generic.CreateView):
@@ -232,6 +249,12 @@ class PageEstacionar(View):
     retorno = 'estacionar.html'
 
     def get(self, request):
+        # VALIDAR SE POSSUI PARADAS EXPIRADAS
+        try:
+            ValidaParadasExpiradas(request)
+        except:
+            logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id})')
+
         form_class = FormEstacionar(user=request.user)
         saldo_atual = get_saldo_atual(request)
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
