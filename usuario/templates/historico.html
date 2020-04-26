@@ -39,12 +39,11 @@
                             <td>{{ parada.data_parada }}</td>
                             <td>{{ parada.quantidade_horas.descricao_horas }}</td>
                             <td>
-                                {% comment %} {{tipo_not}}
-                                {% for tipo_not in parada.notificacao_set %}
-                                    {% if tipo_not.a %}
-                                        <span class="badge bg-danger">Notificado</span>
-                                    {% endif %}
-                                {% endfor %} {% endcomment %}
+                                {% if parada.valido %}
+                                    <span class="badge bg-success">Ativa</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Expirada</span>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
