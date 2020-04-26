@@ -399,34 +399,34 @@ class PageCarteira(View):
 
 
 class PageComprar(View):
-    retorno = 'comprar.html'
+    template_name = 'comprar.html'
 
     def get(self, request):
         form_class = FormCompras
         saldo_atual = get_saldo_atual(request)
-        return render(request, self.retorno, {
-            "form": form_class,
-            "saldo": saldo_atual,
-        })
+        context = getvariables(request)
+        context['form'] = form_class
+        context['saldo'] = saldo_atual
+        return render(request, self.template_name, context=context)
 
     def post(self, request):
         valor_id = request.POST.get('valores')
         valor_compra = ValoresCompra.objects.get(id=valor_id)
+        context = getvariables(request)
 
         carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')[:1]
         if carteira_usuario.count() == 1:
             saldo_atual = list(carteira_usuario.values('saldo'))[0]['saldo'] + valor_compra.valor
         else:
             saldo_atual  = valor_compra.valor
+        context['saldo'] = saldo_atual
 
         usuario = User.objects.get(id=request.user.id)
         carteira_usuario = Carteira(saldo=float(saldo_atual), valor=float(valor_compra.valor), user=usuario, tipo_lancamento='en')
         carteira_usuario.save()
         
         form_class = FormCompras
-        return render(request, self.retorno, {
-            "form": form_class,
-            "saldo": saldo_atual,
-            "sucesso": "True",
-            "sucesso_mensagem": "Compra realizada.",
-        })
+        context['form'] = form_class
+        context['sucesso'] = True
+        context['sucesso_mensagem'] = "Compra realizada."
+        return render(request, self.template_name, context=context)
