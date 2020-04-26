@@ -219,20 +219,20 @@ class PagePerfil(View):
 
 
 class PageInformacoes(View):
-    retorno = 'info.html'
+    template_name = 'info.html'
 
     def get(self, request):
-        return render(request, self.retorno)
+        return render(request, self.template_name)
 
 
 class PageNotificacoes(View):
-    retorno = 'notificacoes.html'
+    template_name = 'notificacoes.html'
 
     def get(self, request):
         notificacoes = Notificacao.objects.filter(user=request.user).order_by('-data_notificacao')
-        return render(request, self.retorno, {
-            'notificacoes': notificacoes,
-        })
+        context = getvariables(request)
+        context['notificacoes'] = notificacoes
+        return render(request, self.template_name, context=context)
 
 class PageNotificacao(View):
     retorno = 'notificacao.html'
