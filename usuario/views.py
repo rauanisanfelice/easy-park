@@ -339,35 +339,34 @@ class PageEstacionar(View):
 
 
 class PageVeiculo(View):
-    retorno = 'veiculo.html'
+    template_name = 'veiculo.html'
     
     def get(self, request):
         veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
-        return render(request, self.retorno, {
-            "veiculos": veiculos
-        })
+        context = getvariables(request)
+        context['veiculos'] = veiculos
+        return render(request, self.template_name, context=context)
     
     def post(self, request):
         var_apelido = request.POST.get('apelido')
         var_placa = request.POST.get('placa')
-        veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
+        context = getvariables(request)
 
         if var_apelido or var_placa:
             newVeiculo = Veiculo(apelido=var_apelido, placa=var_placa, user=request.user)
             newVeiculo.save()
             
-            return render(request, self.retorno, {
-                "veiculos": veiculos,
-                "sucesso": "True",
-                "sucesso_mensagem": "Cadastro de veículo com sucesso.",
-            })
+            veiculos = Veiculo.objects.all().filter(user=request.user.id, ativo=True)
+            context['veiculos'] = veiculos
+
+            context['sucesso'] = True
+            context['sucesso_mensagem'] = "Cadastro de veículo com sucesso."
 
         else:
-            return render(request, self.retorno, {
-                "veiculos": veiculos,
-                "error": "True",
-                "error_mensagem": "Campos vazios.",
-            })
+            context['error'] = True
+            context['error_mensagem'] = "Campos vazios"
+
+        return render(request, self.template_name, context=context)
     
     def delete(self, request):
         
@@ -379,13 +378,13 @@ class PageVeiculo(View):
         if check_veiculo_horario(request, request.user, delVeiculos):
             delVeiculos.ativo = False
             delVeiculos.save()
-            retorno = { "retorno" : True }
+            context = { "retorno" : True }
 
         else:
             # VEICULO JA ESTA EM USO
-            retorno = { "retorno" : False }
+            context = { "retorno" : False }
         
-        return HttpResponse(json.dumps(retorno), content_type="application/json")
+        return HttpResponse(json.dumps(context), content_type="application/json")
 
 class PageCarteira(View):
     retorno = 'carteira.html'
