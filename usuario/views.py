@@ -109,8 +109,8 @@ def ValidaParadasExpiradas(request):
 
 @login_required
 def getvariables(request):
-    paradas_ativas = Parada.objects.filter(valido=True).count()
-    notificacoes_ativas = Notificacao.objects.filter(data_lida__isnull=True).count()
+    paradas_ativas = Parada.objects.filter(valido=True, user=request.user).count()
+    notificacoes_ativas = Notificacao.objects.filter(data_lida__isnull=True, user=request.user).count()
     context = {
         "paradas_ativas": paradas_ativas,
         "notificacoes_ativas": notificacoes_ativas,
@@ -168,7 +168,7 @@ class PagePerfil(View):
 
         if nome == '' or telefone == '' or email == '' or cidade == '' or estado == '':
             context['infousuario'] = None
-            context['error'] = "True"
+            context['error'] = True
             context['error_mensagem'] = "Campos vazios."
             return render(request, self.template_name, context=context)
         
@@ -203,7 +203,7 @@ class PagePerfil(View):
                 infousuario.save()
 
             context['infousuario'] = infousuario
-            context['sucesso'] = "True"
+            context['sucesso'] = True
             context['sucesso_mensagem'] = "Dados atualizados com sucesso."
             
             return render(request, self.template_name, context=context)
@@ -212,7 +212,7 @@ class PagePerfil(View):
             logger.error(f'Erro - Ao atualizar dados do usuario_id: {request.user.id}')
             
             context['infousuario'] = None
-            context['error'] = "True"
+            context['error'] = True
             context['error_mensagem'] = "Erro ao atualizar, por gentileza tente mais tarde"
             
             return render(request, self.template_name, context=context)
@@ -257,7 +257,7 @@ class PageHistorico(View):
 
 
 class PageEstacionar(View):
-    retorno = 'estacionar.html'
+    template_name = 'estacionar.html'
 
     def get(self, request):
         # VALIDAR SE POSSUI PARADAS EXPIRADAS
@@ -270,20 +270,26 @@ class PageEstacionar(View):
         saldo_atual = get_saldo_atual(request)
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
 
-        return render(request, self.retorno, {
-            "form": form_class,
-            "saldo": saldo_atual,
-            "veiculos_ativos": veiculos_ativos,
-        })
+        context = getvariables(request)
+        context['form'] = form_class
+        context['saldo'] = saldo_atual
+        context['veiculos_ativos'] = veiculos_ativos
+
+        return render(request, self.template_name, context=context)
     
     def post(self, request):
+        context = getvariables(request)
         form_class = FormEstacionar(user=request.user)
+        context['form'] = form_class
 
         hora = request.POST.get('horarios')
         placa = request.POST.get('veiculos')
         
         saldo_atual = get_saldo_atual(request)
+        context['saldo'] = saldo_atual
+        
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
+        context['veiculos_ativos'] = veiculos_ativos
 
         # VERIFICA SE FOI SELECIONADO OS CAMPOS
         if hora and placa:
@@ -298,6 +304,7 @@ class PageEstacionar(View):
                         # REALIZA PARADA
                         parada = Parada(veiculo=veiculo, quantidade_horas=hora_selecionada, user=request.user)
                         parada.save()
+                        context['paradas_ativas'] += context['paradas_ativas']
 
                         # ATUALIZA SALDO
                         saldo_atualizado = float(saldo_atual) - float(hora_selecionada.valor.real)
@@ -311,48 +318,24 @@ class PageEstacionar(View):
                         t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 1])
                         t.start()
                         
-                        return render(request, self.retorno, {
-                            "form": form_class,
-                            "saldo": saldo_atual,
-                            "veiculos_ativos": veiculos_ativos,
-                            "sucesso": "True",
-                            "sucesso_mensagem": "Veículo ativo com sucesso.",
-                        })
+                        context['sucesso'] = True
+                        context['sucesso_mensagem'] = "Veículo ativo com sucesso."
+
                     except:
+                        context['error'] = True
+                        context['error_mensagem'] = "Erro ao estacionar o veículo."
                         logger.error(f'Erro ao estacionar - Usuario ID ({request.user.id}), Veiculo ID ({veiculo.id}), Parada ID ({parada.id})')
-                        return render(request, self.retorno, {
-                            "form": form_class,
-                            "saldo": saldo_atual,
-                            "veiculos_ativos": veiculos_ativos,
-                            "error": "True",
-                            "error_mensagem": "Erro ao estacionar o veículo.",
-                        })
-
                 else:
-                    return render(request, self.retorno, {
-                        "form": form_class,
-                        "saldo": saldo_atual,
-                        "veiculos_ativos": veiculos_ativos,
-                        "error": "True",
-                        "error_mensagem": "Veículo já está ativo.",
-                    })
-
+                    context['error'] = True
+                    context['error_mensagem'] = "Veículo já está ativo."
             else:
-                return render(request, self.retorno, {
-                    "form": form_class,
-                    "saldo": saldo_atual,
-                    "veiculos_ativos": veiculos_ativos,
-                    "error": "True",
-                    "error_mensagem": "Saldo insuficiente.",
-                })
+                context['error'] = True
+                context['error_mensagem'] = "Saldo insuficiente."
         else:
-            return render(request, self.retorno, {
-                "form": form_class,
-                "saldo": saldo_atual,
-                "veiculos_ativos": veiculos_ativos,
-                "error": "True",
-                "error_mensagem": "Campos vazios.",
-            })
+            context['error'] = True
+            context['error_mensagem'] = "Campos vazios."
+
+        return render(request, self.template_name, context=context)
 
 
 class PageVeiculo(View):
