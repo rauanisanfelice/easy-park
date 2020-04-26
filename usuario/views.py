@@ -387,15 +387,15 @@ class PageVeiculo(View):
         return HttpResponse(json.dumps(context), content_type="application/json")
 
 class PageCarteira(View):
-    retorno = 'carteira.html'
+    template_name = 'carteira.html'
 
     def get(self, request):
         saldo_atual = get_saldo_atual(request)
         carteira_usuario = Carteira.objects.filter(user=request.user.id).order_by('-data_insercao')
-        return render(request, self.retorno, {
-            "saldo": saldo_atual,
-            "carteira_usuario": carteira_usuario,
-        })
+        context = getvariables(request)
+        context['saldo'] = saldo_atual
+        context['carteira_usuario'] = carteira_usuario
+        return render(request, self.template_name, context=context)
 
 
 class PageComprar(View):
