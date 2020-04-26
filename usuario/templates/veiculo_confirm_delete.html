@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+{% load static %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Veículos{% endblock %}
+{% block name_page %}Veículos{% endblock %}
+{% block tree %}
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">/</div>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <div class="nav-link disabled">Veículos</div>
+</li>
+{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+<div class="card card-solid card-outline">
+    <div class="card-body box-profile">
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_mensagem }}
+        </div>
+        <div class="float-right">
+            <a href="{% url 'veiculo' %}" class="btn btn-default" title="Voltar"><i class="fas fa-reply"></i> Voltar</a>
+        </div>
+        {% endif %}
+        
+        {% if object %}
+            <div class="card-body">
+                <form method="post">{% csrf_token %}
+                    <h6>Confirma exclusão permanente do veículo?</h6>
+                    <p><span>Apelido: </span>{{ object.apelido }}</p>
+                    <p><span>Placa: </span>{{ object.placa }}</p>
+
+                    <input type="submit" class="col col-md-4 align-self-center btn btn-block btn-danger" value="Deletar">
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

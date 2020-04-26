@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.views.generic import View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import View, DeleteView
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -368,23 +368,30 @@ class PageVeiculo(View):
 
         return render(request, self.template_name, context=context)
     
-    def delete(self, request):
-        
-        # BUSCA O ID NO BODY DA REQUISIÇÃO 
-        var_delete = QueryDict(request.body)
-        id_veiculo = var_delete.get('id_veiculo')
 
-        delVeiculos = Veiculo.objects.get(id=id_veiculo)
+class DeleteVeiculo(DeleteView):
+    model = Veiculo
+    success_url = reverse_lazy('veiculo')
+    template_name = 'veiculo_confirm_delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        logger.info(f'Deletando veiculo id ({id})')
+        delVeiculos = Veiculo.objects.get(id=id)
         if check_veiculo_horario(request, request.user, delVeiculos):
             delVeiculos.ativo = False
             delVeiculos.save()
-            context = { "retorno" : True }
+            return redirect('veiculo')
 
-        else:
-            # VEICULO JA ESTA EM USO
-            context = { "retorno" : False }
-        
-        return HttpResponse(json.dumps(context), content_type="application/json")
+        else: # VEICULO JA ESTA EM USO
+            context = getvariables(request)
+            context['error'] = True
+            context['error_mensagem'] = "Veículo está ativo, não pode ser deletado."
+            return render(request, self.template_name, context=context)
+    
+    def get_object(self, queryset=None):
+        veiculo = get_object_or_404(Veiculo.objects.all().filter(id=self.kwargs['pk']))
+        return veiculo
 
 class PageCarteira(View):
     template_name = 'carteira.html'

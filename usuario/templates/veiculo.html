@@ -63,7 +63,7 @@
                     <tr>
                         <th>Apelido</th>
                         <th>Placa</th>
-                        <th>Ação</th>
+                        <th>Remover</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,9 +74,7 @@
                                 <td>{{ veiculo.placa }}</td>
                                 <td>
                                     <div style="text-align: center;">
-                                        <button title="Remover" class="btn btnDelete flex-shrink-1 p-1 text-center btn-acao-vermelho"  value="{{ veiculo.id }}">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                                        <a href="{% url 'veiculo-delete' veiculo.id %}" class="btn flex-shrink-1 p-1 text-center btn-acao-vermelho"><i class="fas fa-trash-alt"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -117,25 +115,6 @@
                 placa.classList.remove("is-valid");
             }
         }
-        
-        $("#table").on('click', '.btnDelete', function () {
-            var id_veiculo = $(this).val();
-            $.ajax({
-                type: "DELETE",
-                url: '{% url 'veiculo' %}',
-                dataType: "json",
-                data: {
-                    'id_veiculo': id_veiculo,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-                },
-                success: function (response) {
-                    $(this).closest('tr').remove();
-                }
-            });
-        });
 
         $(function () {
             $('#table').DataTable({

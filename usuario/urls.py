@@ -16,6 +16,7 @@ urlpatterns = [
     path('historico/', PageHistorico.as_view(), name='historico'),
     path('estacionar/', PageEstacionar.as_view(), name='estacionar'),
     path('veiculo/', PageVeiculo.as_view(), name='veiculo'),
+    path('veiculo/<pk>/delete/', DeleteVeiculo.as_view(template_name='veiculo_confirm_delete.html'), name='veiculo-delete'),
     path('carteira/', PageCarteira.as_view(), name='carteira'),
     path('comprar/', PageComprar.as_view(), name='comprar'),
 ]
