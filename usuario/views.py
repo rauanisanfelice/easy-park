@@ -235,23 +235,25 @@ class PageNotificacoes(View):
         return render(request, self.template_name, context=context)
 
 class PageNotificacao(View):
-    retorno = 'notificacao.html'
+    template_name = 'notificacao.html'
 
     def get(self, request, id):
         notificacao = Notificacao.objects.get(id=id)
         notificacao.data_lida = datetime.datetime.now()
         notificacao.save()
-        return render(request, self.retorno, {"notificacao": notificacao})
+        context = getvariables(request)
+        context['notificacao'] = notificacao
+        return render(request, self.template_name, context=context)
 
 
 class PageHistorico(View):
-    retorno = 'historico.html'
+    template_name = 'historico.html'
 
     def get(self, request):
         paradas = Parada.objects.filter(user=request.user.id).order_by('-data_parada')
-        return render(request, self.retorno,{
-            "paradas": paradas,
-        })
+        context = getvariables(request)
+        context['paradas'] = paradas
+        return render(request, self.template_name, context=context)
 
 
 class PageEstacionar(View):
