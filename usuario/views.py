@@ -107,6 +107,16 @@ def ValidaParadasExpiradas(request):
             parada.valido = False
             parada.save()
 
+@login_required
+def getvariables(request):
+    paradas_ativas = Parada.objects.filter(valido=True).count()
+    notificacoes_ativas = Notificacao.objects.filter(data_lida__isnull=True).count()
+    context = {
+        "paradas_ativas": paradas_ativas,
+        "notificacoes_ativas": notificacoes_ativas,
+    }
+    return context
+
 
 ########################################################################
 class SignUp(generic.CreateView):
@@ -117,7 +127,7 @@ class SignUp(generic.CreateView):
 
 ########################################################################
 class Home(View):
-    retorno = 'home.html'
+    template_name = 'home.html'
 
     def get(self, request):
         try:
@@ -130,23 +140,21 @@ class Home(View):
         elif request.user.is_staff:
             return redirect('/administrativo/')
         else:
-            return render(request, self.retorno)
+            return render(request, self.template_name)
 
 
 class PagePerfil(View):
-    retorno = 'perfil.html'
-    
+    template_name = 'perfil.html'
+
     def get(self, request):
         usuario = User.objects.get(id=request.user.id)
+        context = getvariables(request)
         try:
             infousuario = InfoUsuario.objects.get(user=usuario)
-            return render(request, self.retorno, {
-                "infousuario": infousuario,
-            })
+            context['infousuario'] = infousuario
         except:
-            return render(request, self.retorno, {
-                "infousuario": None,
-            })
+            context['infousuario'] = None
+        return render(request, self.template_name, context=context)
     
     def post(self, request):
         
@@ -156,13 +164,13 @@ class PagePerfil(View):
         password = request.POST.get('password')
         cidade = request.POST.get('cidade', None)
         estado = request.POST.get('estado', None)
+        context = getvariables(request)
 
         if nome == '' or telefone == '' or email == '' or cidade == '' or estado == '':
-            return render(request, self.retorno, {
-                "infousuario": None,
-                "error": "True",
-                "error_mensagem": "Campos vazios.",
-            })
+            context['infousuario'] = None
+            context['error'] = "True"
+            context['error_mensagem'] = "Campos vazios."
+            return render(request, self.template_name, context=context)
         
         usuario = User.objects.get(id=request.user.id)
         try:
@@ -194,19 +202,20 @@ class PagePerfil(View):
                 infousuario = InfoUsuario(telefone=telefone, user=usuario, cidade=cidade, estado=estado)
                 infousuario.save()
 
+            context['infousuario'] = infousuario
+            context['sucesso'] = "True"
+            context['sucesso_mensagem'] = "Dados atualizados com sucesso."
             
-            return render(request, self.retorno, {
-                "infousuario": infousuario,
-                "sucesso": "True",
-                "sucesso_mensagem": "Dados atualizados com sucesso.",
-            })
+            return render(request, self.template_name, context=context)
+
         except:
             logger.error(f'Erro - Ao atualizar dados do usuario_id: {request.user.id}')
-            return render(request, self.retorno, {
-                "infousuario": None,
-                "error": "True",
-                "error_mensagem": "Erro ao atualizar, por gentileza tente mais tarde.",
-            })
+            
+            context['infousuario'] = None
+            context['error'] = "True"
+            context['error_mensagem'] = "Erro ao atualizar, por gentileza tente mais tarde"
+            
+            return render(request, self.template_name, context=context)
 
 
 class PageInformacoes(View):
