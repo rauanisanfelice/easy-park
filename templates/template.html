@@ -103,7 +103,11 @@
                         <li class="nav-item has-treeview">
                             <a href="{% url 'historico' %}" class="nav-link">
                                 <i class="nav-icon fas fa-history"></i>
-                                <p>Histórico<span class="badge badge-warning right">{{ paradas_ativas }}</span></p>
+                                <p>Histórico
+                                {% if paradas_ativas > 0 %}
+                                    <span class="badge badge-warning right">{{ paradas_ativas }}</span>
+                                {% endif %}
+                                </p>
                             </a>
                         </li>
 
@@ -111,7 +115,11 @@
                         <li class="nav-item has-treeview">
                             <a href="{% url 'notificacoes' %}" class="nav-link">
                                 <i class="nav-icon fas fa-bell"></i>
-                                <p>Notificações<span class="badge badge-danger right">{{ notificacoes_ativas }}</span></p>
+                                <p>Notificações
+                                    {% if notificacoes_ativas > 0 %}
+                                        <span class="badge badge-danger right">{{ notificacoes_ativas }}</span>
+                                    {% endif %}
+                                </p>
                             </a>
                         </li>
 
