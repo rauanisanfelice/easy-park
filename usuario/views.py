@@ -109,6 +109,7 @@ def ValidaParadasExpiradas(request):
 
 @login_required
 def getvariables(request):
+    ValidaParadasExpiradas(request)
     paradas_ativas = Parada.objects.filter(valido=True, user=request.user).count()
     notificacoes_ativas = Notificacao.objects.filter(data_lida__isnull=True, user=request.user).count()
     context = {
