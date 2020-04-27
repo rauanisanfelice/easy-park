@@ -32,11 +32,25 @@
         {% if object %}
             <div class="card-body">
                 <form method="post">{% csrf_token %}
-                    <h6>Confirma exclusão permanente do veículo?</h6>
-                    <p><span>Apelido: </span>{{ object.apelido }}</p>
-                    <p><span>Placa: </span>{{ object.placa }}</p>
-
-                    <input type="submit" class="col col-md-4 align-self-center btn btn-block btn-danger" value="Deletar">
+                    <div class="form-group row">
+                        <h6 class="font-weight-bold">Confirma exclusão permanente do veículo?</h6>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-02 col-form-label">Apelido:</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" value="{{ object.apelido }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-02 col-form-label">Placa:</label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" value="{{ object.placa }}">
+                        </div>
+                    </div>
+                    <div class="row justify-content-between">
+                        <input type="submit" class="col col-md-2 btn btn-block btn-danger" value="Deletar">
+                        <a href="{% url 'veiculo' %}" class="col col-md-2 btn btn-default" title="Voltar"><i class="fas fa-reply"></i> Voltar</a>
+                    </div>
                 </form>
             </div>
         {% endif %}
