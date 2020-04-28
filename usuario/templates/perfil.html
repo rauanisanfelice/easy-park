@@ -35,6 +35,11 @@
                 {{ sucesso_mensagem }}
             </div>
         {% endif %}
+        {% if validacao_email %}
+            <div class="alert alert-warning" role="alert">
+                {{ validacao_email_mensagem }}
+            </div>
+        {% endif %}
 
         <form role="form" action="." method="POST"> {% csrf_token %}
             <div class="card-body">
@@ -82,7 +87,11 @@
                         {% endif %}
                         
                         <div class="input-group-append">
-                            <div class="input-group-text"><span class="fas fa-mobile"></span></div>
+                            {% if infousuario.telefone_ativo %}
+                                <div class="btn btn-success"><span class="fas fa-mobile"></span></div>
+                            {% else %}
+                                <div class="btn btn-warning" title="Valide seu número"><span class="fas fa-mobile"></span></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -93,7 +102,11 @@
                     <div class="input-group mb-3">
                         <input name="email" type="email" value="{{ user.email}}" onkeyup="ValidarEmail()" maxlength="60" class="form-control" id="InputEmail" placeholder="E-mail" value="">
                         <div class="input-group-append">
-                            <div class="input-group-text"><span class="fas fa-envelope"></span></div>
+                            {% if infousuario.email_ativo %}
+                                <div class="btn btn-success" title="E-mail validado"><span class="fas fa-envelope"></span></div>
+                            {% else %}
+                                <div class="btn btn-warning" title="Valide seu e-mail"><span class="fas fa-envelope"></span></div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

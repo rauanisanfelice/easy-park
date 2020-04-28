@@ -1,0 +1,25 @@
+
+{% extends 'template-login.html' %}
+{% load static %}
+
+{% comment %} BLOCO DE TITULO DO SITE {% endcomment %}
+{% block title %}Login{% endblock %}
+
+{% comment %} BLOCO HEAD {% endcomment %}
+{% block head %}
+{% endblock %}
+
+{% block card-title %}
+    E-mail validado!
+{% endblock %}
+
+{% comment %} BLOCO DO CORPO DO HTML {% endcomment %}
+{% block body %}
+    <div class="row justify-content-center">
+        <h2><a href="{% url 'home' %}" class="link-none">Acessar conta</a></h2>
+    </div>
+{% endblock %}
+
+{% comment %} BLOCO DE SCPRITS {% endcomment %}
+{% block script %}
+{% endblock %}

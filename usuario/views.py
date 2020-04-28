@@ -13,6 +13,11 @@ from django.http import QueryDict, HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 
+from django.core.mail import send_mail, BadHeaderError
+from django.template import loader
+from django.conf import settings
+from decouple import config
+
 from .models import Veiculo, InfoUsuario, Funcionario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
 from .forms import *
 
@@ -22,8 +27,10 @@ import pytz
 import json
 import threading
 import time
+import hashlib
 
 logger = logging.getLogger(__name__)
+
 
 @login_required
 def index(request):
@@ -90,6 +97,7 @@ def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
         t = threading.Timer(delay, triggerAlertaUsuario, [request, parada, 2])
         t.start()
 
+
 @login_required
 def ValidaParadasExpiradas(request):
     paradasUsuario = Parada.objects.filter(user=request.user, valido=True)
@@ -107,6 +115,7 @@ def ValidaParadasExpiradas(request):
             parada.valido = False
             parada.save()
 
+
 @login_required
 def getvariables(request):
     ValidaParadasExpiradas(request)
@@ -116,7 +125,7 @@ def getvariables(request):
         "paradas_ativas": paradas_ativas,
         "notificacoes_ativas": notificacoes_ativas,
     }
-    return context
+    return context    
 
 
 ########################################################################
@@ -207,17 +216,69 @@ class PagePerfil(View):
             context['sucesso'] = True
             context['sucesso_mensagem'] = "Dados atualizados com sucesso."
             
-            return render(request, self.template_name, context=context)
+            # VERIFICA SE DEVE MANDAR EMAIL DE VALIDACAO
+            if not infousuario.email_ativo:
+                try:
+                    hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(request.user.id)
+                    h = hashlib.md5(hash_user.encode())
+                    variables = {
+                        'user_name': request.user.first_name,
+                        'user_id': str(request.user.id),
+                        'hash': str(h.hexdigest()),
+                        'scheme_host': str(request._current_scheme_host),
+                    }
+                    html_message = loader.render_to_string(settings.TEMPLATE_EMAIL_VALIDACAO, context=variables)
+                    send_mail(
+                        'Validação da conta',
+                        'Teste de validação da conta',
+                        config('DJANGO_EMAIL_USER'),
+                        ['rauan.sanfelice@gmail.com'],
+                        fail_silently=False,
+                        html_message=html_message
+                    )
+                    context['validacao_email'] = True
+                    context['validacao_email_mensagem'] = "E-mail  enviado, por gentileza valide seu e-mail."
+
+                except BadHeaderError:
+                    logger.error(f'Erro ao enviar e-mail de validação - Usuario ID: {request.user.id}')
+                    context['error'] = False
+                    context['error_mensagem'] = "Algo aconteceu de errado, por gentileza tente mais tarde."
 
         except:
-            logger.error(f'Erro - Ao atualizar dados do usuario_id: {request.user.id}')
+            logger.error(f'Erro ao atualizar dados - Usuario ID: {request.user.id}')
             
             context['infousuario'] = None
             context['error'] = True
-            context['error_mensagem'] = "Erro ao atualizar, por gentileza tente mais tarde"
+            context['error_mensagem'] = "Algo aconteceu de errado, por gentileza tente mais tarde."
             
-            return render(request, self.template_name, context=context)
+        return render(request, self.template_name, context=context)
 
+
+class ValidarEmail(View):
+    template_name = "validar-email.html"
+    
+    def get(self, request, userid, hash):
+
+        hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(userid)
+        h = hashlib.md5(hash_user.encode())
+        context = {}
+        if hash == str(h.hexdigest()):
+            usuario = User.objects.get(id=userid)
+            try:
+                infousuario = InfoUsuario.objects.get(user=usuario)
+                infousuario.email_ativo = True
+                infousuario.save()
+
+                context['sucesso'] = True
+                context['sucesso_mensagem'] = "Dados atualizados com sucesso."
+            except:
+                context['error'] = True
+                context['error_mensagem'] = "Algo aconteceu de errado, por gentileza tente mais tarde."
+        else:
+            context['error'] = True
+            context['error_mensagem'] = "Link expirado, por gentileza solicitar um novo."
+
+        return render(request, self.template_name, context=context)
 
 class PageInformacoes(View):
     template_name = 'info.html'

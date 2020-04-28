@@ -1,0 +1,8 @@
+{% autoescape off %}
+Validação de email - Easy Park<br><br>
+Seu usuário: {{ user_name }}<br><br>
+Clique no linke a baixo:<br>
+{{ scheme_host}}{% url 'validaremail' userid=user_id hash=hash %}
+<br><br>
+Easy Park Team
+{% endautoescape %}

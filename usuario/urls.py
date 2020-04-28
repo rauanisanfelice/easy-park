@@ -8,6 +8,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('home/', Home.as_view(), name='home'),
     path('signup/', SignUp.as_view(), name='signup'),
+    path('validar-email/<int:userid>/<hash>', ValidarEmail.as_view(), name='validaremail'),
     
     path('perfil/', PagePerfil.as_view(), name='perfil'),
     path('informacoes/', PageInformacoes.as_view(), name='info'),
