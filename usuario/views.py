@@ -219,11 +219,11 @@ class PagePerfil(View):
             # VERIFICA SE DEVE MANDAR EMAIL DE VALIDACAO
             if not infousuario.email_ativo:
                 try:
-                    hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(request.user.id)
+                    hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(request.user.username)
                     h = hashlib.md5(hash_user.encode())
                     variables = {
                         'user_name': request.user.first_name,
-                        'user_id': str(request.user.id),
+                        'username': str(request.user.username),
                         'hash': str(h.hexdigest()),
                         'scheme_host': str(request._current_scheme_host),
                     }
@@ -257,13 +257,13 @@ class PagePerfil(View):
 class ValidarEmail(View):
     template_name = "validar-email.html"
     
-    def get(self, request, userid, hash):
+    def get(self, request, username, hash):
 
-        hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(userid)
+        hash_user = datetime.datetime.now().date().strftime('%d.%m.%Y') + '.' + str(username)
         h = hashlib.md5(hash_user.encode())
         context = {}
         if hash == str(h.hexdigest()):
-            usuario = User.objects.get(id=userid)
+            usuario = User.objects.get(username=username)
             try:
                 infousuario = InfoUsuario.objects.get(user=usuario)
                 infousuario.email_ativo = True

@@ -190,7 +190,11 @@
         
         //  ESTADOS E CIDADES
         function populateInputEstadoelect(){
-            var estadoSelecionado = {{ infousuario.estado }};
+            {% if infousuario.estado %}
+                var estadoSelecionado = {{ infousuario.estado }};
+            {% else %}
+                var estadoSelecionado = none;
+            {% endif %}
             fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
             .then(res => res.json())
             .then(InputEstado => {
@@ -210,7 +214,12 @@
         };
 
         $('#InputEstado').on('select2:select', () => {
-            var cidadeSelecionado = {{ infousuario.cidade }};
+            {% if infousuario.estado %}
+                var cidadeSelecionado = {{ infousuario.cidade }};
+            {% else %}
+                var cidadeSelecionado = none;
+            {% endif %}
+            
             let nodesSelectInputCidade = selectInputCidade.childNodes;
             [...nodesSelectInputCidade].map(node => node.remove());
             
