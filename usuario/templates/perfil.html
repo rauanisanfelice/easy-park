@@ -62,13 +62,13 @@
                 <!-- Cidade -->
                 <div class="form-group">
                     <label for="InputCidade">Cidade</label>
-                    {% if infousuario %}
+                    {% comment %} {% if infousuario %}
                         <input name="cidade" type="text" value="{{ infousuario.cidade }}" class="form-control select2bs4-cidade" id="InputCidade" placeholder="Cidade">
-                    {% else %}
+                    {% else %} {% endcomment %}
                         <select name="cidade" id="InputCidade" class="form-control select2bs4-cidade" disabled>
                             <option value="">Por favor, selecione um estado</option>
                         </select>
-                    {% endif %}
+                    {% comment %} {% endif %} {% endcomment %}
                 </div>
 
                 <!-- Telefone -->
@@ -177,6 +177,7 @@
         
         //  ESTADOS E CIDADES
         function populateInputEstadoelect(){
+            var estadoSelecionado = {{ infousuario.estado }};
             fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
             .then(res => res.json())
             .then(InputEstado => {
@@ -184,17 +185,28 @@
                     const option = document.createElement('option');
                     option.setAttribute('value', state.id);
                     option.textContent = state.nome;
+
+                    if(estadoSelecionado === state.id){
+                        option.setAttribute('selected', 'selected');
+                        estado.classList.add("is-valid");
+                        estado.classList.remove("is-invalid");
+                    }
                     selectInputEstado.appendChild(option);
                 })
             })
         };
 
         $('#InputEstado').on('select2:select', () => {
+            var cidadeSelecionado = {{ infousuario.cidade }};
             let nodesSelectInputCidade = selectInputCidade.childNodes;
             [...nodesSelectInputCidade].map(node => node.remove());
             
             estado.classList.add("is-valid");
             estado.classList.remove("is-invalid");
+
+            const option = document.createElement('option');
+            option.textContent = "Por favor, selecione uma cidade.";
+            selectInputCidade.appendChild(option);
 
             let state = selectInputEstado.options[selectInputEstado.selectedIndex].value;
             fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${state}/municipios`)
@@ -205,6 +217,11 @@
                     const option = document.createElement('option');
                     option.setAttribute('value', city.id);
                     option.textContent = city.nome;
+                    if(cidadeSelecionado === city.id){
+                        option.setAttribute('selected', 'selected');
+                        cidade.classList.add("is-valid");
+                        cidade.classList.remove("is-invalid");
+                    }
                     selectInputCidade.appendChild(option);
                 })
             })
@@ -227,7 +244,7 @@
         }
 
         function mtel(v){
-            v=v.replace(/\D/g,"");             //Remove tudo o que não é dígito
+            v=v.replace(/\D/g,"");                  //Remove tudo o que não é dígito
             v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
             v=v.replace(/(\d)(\d{4})$/,"$1-$2");    //Coloca hífen entre o quarto e o quinto dígitos
             return v;
