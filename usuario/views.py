@@ -328,11 +328,21 @@ class PageEstacionar(View):
         except:
             logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id})')
 
+        context = getvariables(request)
+        usuario = User.objects.get(id=request.user.id)
+        try:
+            infousuario = InfoUsuario.objects.get(user=usuario)
+            if (infousuario.email_ativo):
+                context['perfilvalido'] = False
+            else:
+                context['perfilvalido'] = True
+        except:
+            context['perfilvalido'] = False
+
         form_class = FormEstacionar(user=request.user)
         saldo_atual = get_saldo_atual(request)
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
 
-        context = getvariables(request)
         context['form'] = form_class
         context['saldo'] = saldo_atual
         context['veiculos_ativos'] = veiculos_ativos
@@ -352,6 +362,18 @@ class PageEstacionar(View):
         
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
         context['veiculos_ativos'] = veiculos_ativos
+        
+        usuario = User.objects.get(id=request.user.id)
+        try:
+            infousuario = InfoUsuario.objects.get(user=usuario)
+            if (infousuario.email_ativo):
+                context['perfilvalido'] = False
+            else:
+                context['perfilvalido'] = True
+                return render(request, self.template_name, context=context)
+        except:
+            context['perfilvalido'] = False
+            return render(request, self.template_name, context=context)
 
         # VERIFICA SE FOI SELECIONADO OS CAMPOS
         if hora and placa:

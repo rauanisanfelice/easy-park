@@ -48,6 +48,11 @@
             {{ sucesso_mensagem }}
         </div>
         {% endif %}
+        {% if perfilvalido %}
+        <div class="alert alert-warning" role="alert">
+            Complete seu cadastro, para conseguir estacionar seu veículo.
+        </div>
+        {% endif %}
 
         {% comment %} TABELA {% endcomment %}
         <div class="card-body">
