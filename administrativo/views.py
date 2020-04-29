@@ -19,6 +19,7 @@ class Dashboard(View):
     template_name = 'dashboard-summary.html'
     
     def get(self, request):
+        context = {}
         mes_dias = datetime.datetime.now().month
         ano_dias = datetime.datetime.now().year
         if 'limpar' in request.GET:
@@ -145,26 +146,24 @@ class Dashboard(View):
 
         ##########################################
         # RETORNO
-        dict_retorno = {
-            "sum_valor_entradas": sum_valor_entradas,
-            "sum_valor_carteira": sum_valor_carteira,
-            "sum_valor_saidas": sum_valor_saidas,
-            "sum_total_paradas": sum_total_paradas,
-            "sum_total_paradas_ativas": sum_total_paradas_ativas,
-            "total_veiculos_cadastrados": total_veiculos_cadastrados,
-            "sum_total_notificacoes": sum_total_notificacoes,
-            "sum_total_notificacoes_lidas": sum_total_notificacoes_lidas,
-            "sum_total_infracoes": sum_total_infracoes,
-            "taxa_notificacoes": format(taxa_notificacoes, '.2f'),
-            "taxa_notificacoes_lidas": format(taxa_notificacoes_lidas, '.2f'),
-            "taxa_infracoes": format(taxa_infracoes, '.2f'),
-            "horas_validas": horas_validas,
-            "total_horas_paradas": total_horas_paradas,
-            "delta_horas_paradas": delta_horas_paradas,
-            "pesquisasFuncionarios": pesquisasFuncionarios,
-            "vendasFuncionarios": vendasFuncionarios,
-        }
-        return render(request, self.template_name, dict_retorno)
+        context["sum_valor_entradas"] = sum_valor_entradas
+        context["sum_valor_carteira"] = sum_valor_carteira
+        context["sum_valor_saidas"] = sum_valor_saidas
+        context["sum_total_paradas"] = sum_total_paradas
+        context["sum_total_paradas_ativas"] = sum_total_paradas_ativas
+        context["total_veiculos_cadastrados"] = total_veiculos_cadastrados
+        context["sum_total_notificacoes"] = sum_total_notificacoes
+        context["sum_total_notificacoes_lidas"] = sum_total_notificacoes_lidas
+        context["sum_total_infracoes"] = sum_total_infracoes
+        context["taxa_notificacoes"] = format(taxa_notificacoes, '.2f')
+        context["taxa_notificacoes_lidas"] = format(taxa_notificacoes_lidas, '.2f')
+        context["taxa_infracoes"] = format(taxa_infracoes, '.2f')
+        context["horas_validas"] = horas_validas
+        context["total_horas_paradas"] = total_horas_paradas
+        context["delta_horas_paradas"] = delta_horas_paradas
+        context["pesquisasFuncionarios"] = pesquisasFuncionarios
+        context["vendasFuncionarios"] = vendasFuncionarios
+        return render(request, self.template_name, context=context)
     
     def post(self, request):
         return render(request, self.template_name)
@@ -174,6 +173,7 @@ class Historico(View):
     template_name = 'dashboard-historico.html'
     
     def get(self, request):
+        context = {}
         if 'limpar' in request.GET:
             ano_inicio = datetime.datetime.now().year
             mes_inicio = datetime.datetime.now().month
@@ -205,13 +205,10 @@ class Historico(View):
         infracoes = infracoes.values('ano', 'mes').annotate(total=Count('mes'))
 
         # RETORNO
-        dict_retorno = {
-            "paradas": paradas,
-            "notificacoes": notificacoes,
-            "infracoes": infracoes,
-        }
-
-        return render(request, self.template_name, dict_retorno)
+        context["paradas"] = paradas
+        context["notificacoes"] = notificacoes
+        context["infracoes"] = infracoes
+        return render(request, self.template_name, context=context)
 
 
 class Report(View):
@@ -230,10 +227,7 @@ class Report(View):
             paradas = paradas.filter(data_parada__year=ano)
         if mes:
             paradas = paradas.filter(data_parada__month=mes)
-
-        return render(request, self.template_name, {
-            "paradas": paradas,
-        })
+        return render(request, self.template_name, { "paradas": paradas, })
     
     
     def post(self, request):
@@ -247,7 +241,7 @@ class Report(View):
         if mes:
             paradas = paradas.filter(data_parada__month=mes)
         
-        kwargs = {"paradas": paradas}
+        kwargs = {"paradas": paradas }
         return ExportarCSV(request, **kwargs)
 
 
