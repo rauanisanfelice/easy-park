@@ -112,7 +112,7 @@ class Dashboard(View):
         sum_total_infracoes = sum_total_infracoes.aggregate(Count('tipo_notificacao'))['tipo_notificacao__count']
         sum_total_horas_paradas = sum_total_horas_paradas.aggregate(Sum('quantidade_horas__horas'), Sum('quantidade_horas__minutos'))
         pesquisasFuncionarios = pesquisasFuncionarios.values('funcionario__first_name').annotate(total=Count('funcionario__first_name')).order_by('total')[:5]
-        vendasFuncionarios = vendasFuncionarios.values('funcionario__first_name', 'parada__quantidade_horas__valor').annotate(total=Count('funcionario__first_name'), sum=Count('parada__quantidade_horas__valor')).order_by('funcionario__first_name')[:5]
+        vendasFuncionarios = vendasFuncionarios.values('funcionario__first_name', 'parada__quantidade_horas__valor').annotate(total=Count('funcionario__first_name'), sum=Sum('parada__quantidade_horas__valor')).order_by('funcionario__first_name')[:5]
 
         ##########################################
         # CALCULOS
