@@ -128,6 +128,18 @@ def getvariables(request):
     return context    
 
 
+@login_required
+def CadastroCompleto(request):
+    retorno = False
+    usuario = User.objects.get(id=request.user.id)
+    try:
+        infousuario = InfoUsuario.objects.get(user=usuario)
+        if infousuario.email_ativo:
+            retorno = True
+    except:
+        logger.error(f'Erro ao verificar info usuário - Usuario ID ({request.user.id})')
+    return retorno
+
 ########################################################################
 class SignUp(generic.CreateView):
     form_class = SignUpForm
@@ -329,16 +341,6 @@ class PageEstacionar(View):
             logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id})')
 
         context = getvariables(request)
-        usuario = User.objects.get(id=request.user.id)
-        try:
-            infousuario = InfoUsuario.objects.get(user=usuario)
-            if (infousuario.email_ativo):
-                context['perfilvalido'] = False
-            else:
-                context['perfilvalido'] = True
-        except:
-            context['perfilvalido'] = False
-
         form_class = FormEstacionar(user=request.user)
         saldo_atual = get_saldo_atual(request)
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
@@ -346,6 +348,7 @@ class PageEstacionar(View):
         context['form'] = form_class
         context['saldo'] = saldo_atual
         context['veiculos_ativos'] = veiculos_ativos
+        context['perfilvalido'] = CadastroCompleto(request)
 
         return render(request, self.template_name, context=context)
     
@@ -363,16 +366,9 @@ class PageEstacionar(View):
         veiculos_ativos = Parada.objects.filter(user=request.user, valido=True)
         context['veiculos_ativos'] = veiculos_ativos
         
-        usuario = User.objects.get(id=request.user.id)
-        try:
-            infousuario = InfoUsuario.objects.get(user=usuario)
-            if (infousuario.email_ativo):
-                context['perfilvalido'] = False
-            else:
-                context['perfilvalido'] = True
-                return render(request, self.template_name, context=context)
-        except:
-            context['perfilvalido'] = False
+        # VALIDA SE PERFIL ESTA ATIVO
+        context['perfilvalido'] = CadastroCompleto(request)
+        if not context['perfilvalido']:
             return render(request, self.template_name, context=context)
 
         # VERIFICA SE FOI SELECIONADO OS CAMPOS
