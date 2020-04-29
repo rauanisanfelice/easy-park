@@ -105,4 +105,4 @@ class VenderCreditos(View):
             context['error_mensagem'] = "Algo aconteceu de errado! Por gentileza tentar novamente mais tarde."
             logger.error(f'Erro gerar Parada - Placa do Veiculo ({placa}) - Id Hora ({hora}) - Funcionario {request.user.id}')
 
-        return render(request, self.retorno, context=context)
+        return render(request, self.template_name, context=context)
