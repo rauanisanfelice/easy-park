@@ -49,7 +49,7 @@ class Dashboard(View):
         sum_total_paradas_ativas = Parada.objects.filter(valido=True)
         total_veiculos_cadastrados = Veiculo.objects.filter(ativo=True)
         sum_total_notificacoes = Notificacao.objects.filter(tipo_notificacao__in=tp_notificacao)
-        sum_total_notificacoes_lidas = Notificacao.objects.filter(data_lida__isnull=False)
+        sum_total_notificacoes_lidas = Notificacao.objects.filter(tipo_notificacao__in=tp_notificacao, data_lida__isnull=False)
         sum_total_infracoes = Notificacao.objects.filter(tipo_notificacao__in=tp_infracao)
         sum_total_horas_paradas = Parada.objects.all()
         pesquisasFuncionarios = PesquisaVeiculo.objects.all()
@@ -134,7 +134,7 @@ class Dashboard(View):
             taxa_infracoes = 0
         else:
             taxa_notificacoes = float(((sum_total_notificacoes * 1) / sum_total_paradas) * 100)
-            taxa_notificacoes_lidas = float(((sum_total_notificacoes_lidas * 1) / sum_total_paradas) * 100)
+            taxa_notificacoes_lidas = float(((sum_total_notificacoes_lidas * 1) / sum_total_notificacoes) * 100)
             taxa_infracoes = float(((sum_total_infracoes * 1) / sum_total_paradas) * 100)
 
         # DESEMPENHO
