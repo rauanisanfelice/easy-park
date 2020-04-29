@@ -16,7 +16,7 @@ HORAS_VALIDAS_DIA = 8
 DIAS_UTEIS_SEMANA = 6
 
 class Dashboard(View):
-    retorno = 'dashboard-summary.html'
+    template_name = 'dashboard-summary.html'
     
     def get(self, request):
         mes_dias = datetime.datetime.now().month
@@ -164,14 +164,14 @@ class Dashboard(View):
             "pesquisasFuncionarios": pesquisasFuncionarios,
             "vendasFuncionarios": vendasFuncionarios,
         }
-        return render(request, self.retorno, dict_retorno)
+        return render(request, self.template_name, dict_retorno)
     
     def post(self, request):
-        return render(request, self.retorno)
+        return render(request, self.template_name)
 
 
 class Historico(View):
-    retorno = 'dashboard-historico.html'
+    template_name = 'dashboard-historico.html'
     
     def get(self, request):
         if 'limpar' in request.GET:
@@ -211,11 +211,11 @@ class Historico(View):
             "infracoes": infracoes,
         }
 
-        return render(request, self.retorno, dict_retorno)
+        return render(request, self.template_name, dict_retorno)
 
 
 class Report(View):
-    retorno = 'report.html'
+    template_name = 'report.html'
     
     def get(self, request):
         if 'limpar' in request.GET:
@@ -231,7 +231,7 @@ class Report(View):
         if mes:
             paradas = paradas.filter(data_parada__month=mes)
 
-        return render(request, self.retorno, {
+        return render(request, self.template_name, {
             "paradas": paradas,
         })
     
