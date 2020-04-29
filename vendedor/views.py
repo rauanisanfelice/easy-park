@@ -1,16 +1,23 @@
 from django.shortcuts import render
 from django.views.generic import View
 
-from django.contrib.admin.views.decorators import staff_member_required
 from usuario.models import Veiculo, Notificacao, TipoNotificacao, HorasEstacionar, Parada
 from usuario.views import check_veiculo_horario
+
 from .models import PesquisaVeiculo, VendaFuncionario
 from .forms import FormCompraCreditos
 
 import logging
 import datetime
+import threading
 
 logger = logging.getLogger(__name__)
+
+
+def triggerEncerraParadaFuncionario(request, parada):
+    logger.info(f'Encerrando Parada ({parada.id}) feita por Funcionario ID ({request.user.id})')
+    parada.valido = False
+    parada.save()
 
 class VerificaVeiculo(View):
     template_name = 'verifica.html'
@@ -97,6 +104,13 @@ class VenderCreditos(View):
             veiculo.save()
             parada.save()
             venda.save()
+
+            # TRIGER ENCERRA PARADA
+            data_notificar = parada.data_parada + datetime.timedelta(hours=parada.quantidade_horas.horas, minutes=parada.quantidade_horas.minutos)
+            delay = (data_notificar.replace(tzinfo=None) - datetime.datetime.utcnow()).total_seconds()
+            t = threading.Timer(delay, triggerEncerraParadaFuncionario, [request, parada])
+            t.start()
+
             context['sucesso'] = True
             context['sucesso_mensagem'] = "Compra de créditos realizada com sucesso."
 
