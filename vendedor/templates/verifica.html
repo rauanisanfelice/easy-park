@@ -11,7 +11,11 @@
 {% block body %}
     {% comment %} MENSAGENS DE RETORNO {% endcomment %}
     {% if error %}
-        <div class="alert alert-danger" role="alert">
+        {% if aplicativo %}
+            <div class="alert alert-warning" role="alert">
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+        {% endif %}
             <h5><i class="icon fas fa-ban"></i>Atenção!</h5>
             <p class="font-weight-bold">
                 {{ error_mensagem }}
