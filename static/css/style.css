@@ -9,7 +9,7 @@
 }
 
 .link-none:visited{
-    color:#6c757d;   
+    color:#6c757d;
 }
 
 #id_username{
@@ -75,14 +75,14 @@
     border-radius: 2px;
     -webkit-transition: 0.66s all;
     -o-transition: 0.66s all;
-    transition: 0.66s all; 
+    transition: 0.66s all;
 }
 .btn-acao-verde:hover {
     -webkit-transition: 0.66s all;
     -o-transition: 0.66s all;
     transition: 0.66s all;
     background-color: #007e0c !important;
-    color: #ffffff !important; 
+    color: #ffffff !important;
 }
 
 .btn-acao-azul {

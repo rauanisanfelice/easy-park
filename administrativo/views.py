@@ -28,8 +28,10 @@ class Dashboard(View):
         else:    
             ano = request.GET.get('ano', None)
             mes = request.GET.get('mes', None)    
-            if ano: ano_dias = int(ano)
-            if mes: mes_dias = int(mes)
+            if ano:
+                ano_dias = int(ano)
+            if mes:
+                mes_dias = int(mes)
                 
 
         # NOTIFICAÇÕES E INFRAÇÕES
