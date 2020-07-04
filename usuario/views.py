@@ -164,8 +164,7 @@ class Home(View):
             return redirect('/vendedor/')
         elif request.user.is_staff:
             return redirect('/administrativo/')
-        else:
-            return render(request, self.template_name)
+        return render(request, self.template_name)
 
 
 class PagePerfil(View):
