@@ -19,7 +19,7 @@ from django.conf import settings
 from decouple import config
 
 from .models import Veiculo, InfoUsuario, Funcionario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
-from .forms import *
+from .forms import SignUpForm, FormCompras, FormEstacionar
 
 import logging
 import datetime
@@ -56,7 +56,7 @@ def check_veiculo_horario(request, usuario, veiculo):
         paradas_veiculos = Parada.objects.filter(veiculo__id=veiculo.id).order_by('-id')[:1]
 
     if paradas_veiculos.count() == 0:
-        return True # FORA DO PERIDO
+        return False # FORA DO PERIDO
     else:
         data_parada = list(paradas_veiculos.values('data_parada'))[0]['data_parada']
         id_horas = list(paradas_veiculos.values('quantidade_horas'))[0]['quantidade_horas']
@@ -72,8 +72,7 @@ def check_veiculo_horario(request, usuario, veiculo):
 
         if hoje > data_parada and hoje < data_validar:
             return False # DENTRO DO PERIDO
-        else:
-            return True # FORA DO PERIDO
+        return True # FORA DO PERIDO
 
 
 def triggerAlertaUsuario(request, parada, tipo_da_notificacao):
@@ -120,8 +119,8 @@ def ValidaParadasExpiradas(request):
 def getvariables(request):
     try:
         ValidaParadasExpiradas(request)
-    except:
-        logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id})')
+    except Exception as e:
+        logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id}) - Erro: {e}')
     paradas_ativas = Parada.objects.filter(valido=True, user=request.user).count()
     notificacoes_ativas = Notificacao.objects.filter(data_lida__isnull=True, user=request.user).count()
     context = {
@@ -139,8 +138,8 @@ def CadastroCompleto(request):
         infousuario = InfoUsuario.objects.get(user=usuario)
         if infousuario.email_ativo:
             retorno = True
-    except:
-        logger.error(f'Erro ao verificar info usuário - Usuario ID ({request.user.id})')
+    except Exception as e:
+        logger.error(f'Erro ao verificar info usuário - Usuario ID ({request.user.id}) - Erro: {e}')
     return retorno
 
 ########################################################################
@@ -157,8 +156,9 @@ class Home(View):
     def get(self, request):
         try:
             funcionario = Funcionario.objects.get(user=request.user)
-        except:
+        except Exception as e:
             funcionario = None
+            logger.error(f'Erro ao buscar funcionário - Usuario ID ({request.user.id}) - Erro: {e}')
 
         if funcionario:
             return redirect('/vendedor/')
@@ -177,7 +177,8 @@ class PagePerfil(View):
         try:
             infousuario = InfoUsuario.objects.get(user=usuario)
             context['infousuario'] = infousuario
-        except:
+        except Exception as e:
+            logger.error(f'Erro ao buscar usuário - Usuario ID ({request.user.id}) - Erro: {e}')
             context['infousuario'] = None
         return render(request, self.template_name, context=context)
     
@@ -200,7 +201,8 @@ class PagePerfil(View):
         usuario = User.objects.get(id=request.user.id)
         try:
             infousuario = InfoUsuario.objects.get(user=usuario)
-        except:
+        except Exception as e:
+            logger.error(f'Erro ao buscar funcionário - Usuario ID ({request.user.id}) - Erro: {e}')
             infousuario = None
         
         try:
@@ -259,8 +261,8 @@ class PagePerfil(View):
                     context['error'] = False
                     context['error_mensagem'] = "Algo aconteceu de errado, por gentileza tente mais tarde."
 
-        except:
-            logger.error(f'Erro ao atualizar dados - Usuario ID: {request.user.id}')
+        except Exception as e:
+            logger.error(f'Erro ao atualizar dados - Usuario ID: ({request.user.id}) - Erro: {e}')
             
             context['infousuario'] = None
             context['error'] = True
@@ -286,7 +288,8 @@ class ValidarEmail(View):
 
                 context['sucesso'] = True
                 context['sucesso_mensagem'] = "Dados atualizados com sucesso."
-            except:
+            except Exception as e:
+                logger.error(f'Erro ao salvar usuário - Usuario ID ({request.user.id}) - Erro: {e}')
                 context['error'] = True
                 context['error_mensagem'] = "Algo aconteceu de errado, por gentileza tente mais tarde."
         else:
@@ -340,8 +343,8 @@ class PageEstacionar(View):
         # VALIDAR SE POSSUI PARADAS EXPIRADAS
         try:
             ValidaParadasExpiradas(request)
-        except:
-            logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id})')
+        except Exception as e:
+            logger.error(f'Erro ao validar paradas expiradas - Id Usuario ({request.user.id}) - Erro: {e}')
 
         context = getvariables(request)
         form_class = FormEstacionar(user=request.user)
@@ -404,10 +407,10 @@ class PageEstacionar(View):
                         context['sucesso'] = True
                         context['sucesso_mensagem'] = "Veículo ativo com sucesso."
 
-                    except:
+                    except Exception as e:
                         context['error'] = True
                         context['error_mensagem'] = "Erro ao estacionar o veículo."
-                        logger.error(f'Erro ao estacionar - Usuario ID ({request.user.id}), Veiculo ID ({veiculo.id}), Parada ID ({parada.id})')
+                        logger.error(f'Erro ao estacionar - Usuario ID ({request.user.id}), Veiculo ID ({veiculo.id}), Parada ID ({parada.id}) - Erro: {e}')
                 else:
                     context['error'] = True
                     context['error_mensagem'] = "Veículo já está ativo."
@@ -458,19 +461,18 @@ class DeleteVeiculo(DeleteView):
     template_name = 'veiculo_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
-        id = kwargs['pk']
-        logger.info(f'Deletando veiculo id ({id})')
+        logger.info(f"Deletando veiculo id (kwargs['pk'])")
         delVeiculos = Veiculo.objects.get(id=id)
         if check_veiculo_horario(request, request.user, delVeiculos):
             delVeiculos.ativo = False
             delVeiculos.save()
             return redirect('veiculo')
 
-        else: # VEICULO JA ESTA EM USO
-            context = getvariables(request)
-            context['error'] = True
-            context['error_mensagem'] = "Veículo está ativo, não pode ser deletado."
-            return render(request, self.template_name, context=context)
+        # VEICULO JA ESTA EM USO
+        context = getvariables(request)
+        context['error'] = True
+        context['error_mensagem'] = "Veículo está ativo, não pode ser deletado."
+        return render(request, self.template_name, context=context)
     
     def get_object(self, queryset=None):
         veiculo = get_object_or_404(Veiculo.objects.all().filter(id=self.kwargs['pk']))
