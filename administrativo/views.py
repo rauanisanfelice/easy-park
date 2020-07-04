@@ -116,13 +116,20 @@ class Dashboard(View):
 
         ##########################################
         # CALCULOS
-        if sum_valor_entradas is None: sum_valor_entradas = 0
-        if sum_valor_saidas is None: sum_valor_saidas = 0
-        if sum_total_paradas is None: sum_total_paradas = 0
-        if sum_total_paradas_ativas is None: sum_total_paradas_ativas = 0
-        if sum_total_notificacoes is None: sum_total_notificacoes = 0
-        if sum_total_notificacoes_lidas is None: sum_total_notificacoes_lidas = 0
-        if sum_total_infracoes is None: sum_total_infracoes = 0
+        if sum_valor_entradas is None:
+            sum_valor_entradas = 0
+        if sum_valor_saidas is None:
+            sum_valor_saidas = 0
+        if sum_total_paradas is None:
+            sum_total_paradas = 0
+        if sum_total_paradas_ativas is None:
+            sum_total_paradas_ativas = 0
+        if sum_total_notificacoes is None:
+            sum_total_notificacoes = 0
+        if sum_total_notificacoes_lidas is None:
+            sum_total_notificacoes_lidas = 0
+        if sum_total_infracoes is None:
+            sum_total_infracoes = 0
 
         # CREDITOS
         sum_valor_carteira = sum_valor_entradas - sum_valor_saidas
@@ -180,8 +187,10 @@ class Historico(View):
         else:    
             ano_inicio = request.GET.get('ano', None)
             mes_inicio = request.GET.get('mes', None)
-            if not ano_inicio: ano_inicio = datetime.datetime.now().year
-            if not mes_inicio: mes_inicio = datetime.datetime.now().month
+            if not ano_inicio:
+                ano_inicio = datetime.datetime.now().year
+            if not mes_inicio:
+                mes_inicio = datetime.datetime.now().month
         ano_fim = int(ano_inicio) - 1
         mes_fim = mes_inicio
         
