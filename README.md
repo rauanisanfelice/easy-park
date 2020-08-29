@@ -13,6 +13,20 @@
 
 Projeto de Estacionamento Rotativo
 
+
+### **Tela início**
+![Tela Início](https://raw.githubusercontent.com/rauanisanfelice/easy-park/master/static/img/examples/início.png)
+
+### **Tela estacionar**
+![Tela Estacionar](https://raw.githubusercontent.com/rauanisanfelice/easy-park/master/static/img/examples/estacionar.png)
+
+### **Tela de verificação do veículo**
+![Tela verificação](https://raw.githubusercontent.com/rauanisanfelice/easy-park/master/static/img/examples/verificar_veículo.png)
+
+### **Tela dashboards**
+![Tela Início](https://raw.githubusercontent.com/rauanisanfelice/easy-park/master/static/img/examples/dashboards_resumo.png)
+
+
 # Instruções
 
 1. Ambiente Python;
