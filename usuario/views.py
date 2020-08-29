@@ -18,7 +18,7 @@ from django.template import loader
 from django.conf import settings
 from decouple import config
 
-from .models import Veiculo, InfoUsuario, Funcionario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao
+from .models import Veiculo, InfoUsuario, Funcionario, ValoresCompra, Carteira, Parada, Notificacao, TipoNotificacao, HorasEstacionar
 from .forms import SignUpForm, FormCompras, FormEstacionar
 
 import logging
